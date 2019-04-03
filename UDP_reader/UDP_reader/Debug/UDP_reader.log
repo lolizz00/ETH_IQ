@@ -1,0 +1,5 @@
+﻿  UDP_reader.cpp
+  dllmain.cpp
+  Создание кода...
+     Создается библиотека C:\Users\User\Desktop\UDP_reader\Debug\UDP_reader.lib и объект C:\Users\User\Desktop\UDP_reader\Debug\UDP_reader.exp
+LINK : fatal error LNK1561: точка входа должна быть определена

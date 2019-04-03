@@ -1,0 +1,8 @@
+﻿  dllmain.cpp
+  UDP_reader.cpp
+     Создается библиотека C:\Users\User\Desktop\UDP_reader\x64\Release\UDP_reader.lib и объект C:\Users\User\Desktop\UDP_reader\x64\Release\UDP_reader.exp
+  Создание кода
+  All 486 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Создание кода завершено
+  UDP_reader.vcxproj -> C:\Users\User\Desktop\UDP_reader\x64\Release\UDP_reader.dll
+  UDP_reader.vcxproj -> C:\Users\User\Desktop\UDP_reader\x64\Release\UDP_reader.pdb (Full PDB)
