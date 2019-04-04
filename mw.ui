@@ -42,6 +42,247 @@
      </size>
     </property>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0" rowspan="2">
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Управление</string>
+       </property>
+       <widget class="QPushButton" name="startPushButton">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>340</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Старт!</string>
+        </property>
+       </widget>
+       <widget class="QToolBox" name="modeToolBox">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>120</y>
+          <width>311</width>
+          <height>171</height>
+         </rect>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="realPage">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>311</width>
+           <height>117</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>Реальное время</string>
+         </attribute>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>10</y>
+            <width>178</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Кол-во посылок:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="pointCntSpinBox">
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>10000000</number>
+             </property>
+             <property name="singleStep">
+              <number>3</number>
+             </property>
+             <property name="value">
+              <number>1</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>50</y>
+            <width>195</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QCheckBox" name="updateCheckBox">
+             <property name="text">
+              <string>Обновлять </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Раз в </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="updateLineEdit">
+             <property name="text">
+              <string>5</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_8">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>с</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QCheckBox" name="onlySaveCheckBox">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>90</y>
+            <width>151</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Не отстраивать графики</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="filePage">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>311</width>
+           <height>77</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>Файл</string>
+         </attribute>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>30</y>
+            <width>254</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Путь:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="filePathLineEdit"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="selectFilePushButton">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>25</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QCheckBox" name="suppFileCheckBox">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>0</y>
+            <width>181</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Удерживать прошлый график</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QPushButton" name="stopPushButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>340</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Стоп!</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
      <item row="1" column="1">
       <widget class="QGroupBox" name="groupBox_2">
        <property name="title">
@@ -83,119 +324,20 @@
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>31</x>
-          <y>41</y>
-          <width>221</width>
-          <height>48</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Коэф.</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" colspan="2">
-          <widget class="QLineEdit" name="fftKLineEdit">
-           <property name="text">
-            <string>2000</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Оконная функция:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" colspan="2">
-          <widget class="QComboBox" name="fftWinComboBox">
-           <item>
-            <property name="text">
-             <string>gaussian</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>kaiser</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>blackman</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>barthann</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>exponential</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QCheckBox" name="showSampleCheckBox">
-        <property name="geometry">
-         <rect>
-          <x>130</x>
-          <y>200</y>
-          <width>149</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Отображать точки</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="showSplineCheckBox">
-        <property name="geometry">
-         <rect>
-          <x>130</x>
-          <y>220</y>
-          <width>149</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Отображать график</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QWidget" name="">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>100</y>
-          <width>251</width>
-          <height>71</height>
+          <x>10</x>
+          <y>20</y>
+          <width>131</width>
+          <height>65</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_5">
+         <item row="2" column="0">
+          <widget class="QRadioButton" name="specModeRadioButton">
+           <property name="text">
+            <string>Спектограмма</string>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0">
           <widget class="QRadioButton" name="oscModeRadioButton">
            <property name="text">
@@ -206,198 +348,38 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_5">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Каналы:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QComboBox" name="chanComboBox">
-           <item>
-            <property name="text">
-             <string>2</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1</string>
-            </property>
-           </item>
-          </widget>
-         </item>
          <item row="1" column="0">
-          <widget class="QRadioButton" name="specModeRadioButton">
-           <property name="text">
-            <string>Спектограмма</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
           <widget class="QRadioButton" name="iqModeRadioButton">
            <property name="text">
-            <string>Отдельно I и Q</string>
+            <string>Осцилограмма  I и Q</string>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="label_9">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Канал:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QComboBox" name="specChanComboBox">
-           <item>
-            <property name="text">
-             <string>1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>3</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>4</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>5</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>6</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>7</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>8</string>
-            </property>
-           </item>
           </widget>
          </item>
         </layout>
        </widget>
-      </widget>
-     </item>
-     <item row="0" column="0" rowspan="2">
-      <widget class="QGroupBox" name="groupBox">
-       <property name="title">
-        <string>Управление</string>
-       </property>
-       <widget class="QPushButton" name="startPushButton">
+       <widget class="QTabWidget" name="tabWidget">
         <property name="geometry">
          <rect>
-          <x>110</x>
-          <y>470</y>
-          <width>75</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Старт!</string>
-        </property>
-       </widget>
-       <widget class="QToolBox" name="modeToolBox">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>30</y>
-          <width>291</width>
-          <height>261</height>
+          <x>10</x>
+          <y>100</y>
+          <width>371</width>
+          <height>171</height>
          </rect>
         </property>
         <property name="currentIndex">
          <number>0</number>
         </property>
-        <widget class="QWidget" name="realPage">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>291</width>
-           <height>207</height>
-          </rect>
-         </property>
-         <attribute name="label">
-          <string>Реальное время</string>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>Осицлограмма</string>
          </attribute>
          <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>0</y>
-            <width>178</width>
-            <height>22</height>
-           </rect>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QLabel" name="label_2">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Кол-во посылок:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="pointCntSpinBox">
-             <property name="minimum">
-              <number>1</number>
-             </property>
-             <property name="maximum">
-              <number>10000000</number>
-             </property>
-             <property name="singleStep">
-              <number>3</number>
-             </property>
-             <property name="value">
-              <number>1</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="layoutWidget">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>50</y>
-            <width>211</width>
-            <height>101</height>
+            <y>30</y>
+            <width>171</width>
+            <height>81</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -483,31 +465,50 @@
            </item>
           </layout>
          </widget>
-        </widget>
-        <widget class="QWidget" name="filePage">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>291</width>
-           <height>207</height>
-          </rect>
-         </property>
-         <attribute name="label">
-          <string>Файл</string>
-         </attribute>
-         <widget class="QWidget" name="layoutWidget">
+         <widget class="QWidget" name="">
           <property name="geometry">
            <rect>
-            <x>20</x>
-            <y>120</y>
-            <width>254</width>
-            <height>27</height>
+            <x>200</x>
+            <y>60</y>
+            <width>129</width>
+            <height>42</height>
            </rect>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
+          <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QLabel" name="label">
+            <widget class="QCheckBox" name="showSampleCheckBox">
+             <property name="text">
+              <string>Отображать точки</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="showSplineCheckBox">
+             <property name="text">
+              <string>Отображать график</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>30</y>
+            <width>88</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="label_5">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -515,141 +516,207 @@
               </font>
              </property>
              <property name="text">
-              <string>Путь:</string>
+              <string>Каналы:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="filePathLineEdit"/>
-           </item>
-           <item>
-            <widget class="QPushButton" name="selectFilePushButton">
-             <property name="minimumSize">
-              <size>
-               <width>25</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>25</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>...</string>
-             </property>
+            <widget class="QComboBox" name="chanComboBox">
+             <item>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </item>
             </widget>
            </item>
           </layout>
          </widget>
         </widget>
-       </widget>
-       <widget class="QCheckBox" name="updateCheckBox">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>410</y>
-          <width>81</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Обновлять </string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="stopPushButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>200</x>
-          <y>470</y>
-          <width>75</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Стоп!</string>
-        </property>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>310</y>
-          <width>284</width>
-          <height>48</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="label_6">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Частота дискретизации:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLineEdit" name="fsLineEdit">
-           <property name="text">
-            <string>8000</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>430</y>
-          <width>181</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QLabel" name="label_7">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Раз в </string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="updateLineEdit">
-           <property name="text">
-            <string>5</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_8">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>с</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>Спектограмма</string>
+         </attribute>
+         <widget class="QWidget" name="">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>121</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_9">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Канал №</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="specChanComboBox">
+             <item>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>3</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>4</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>5</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>6</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>7</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>8</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>40</y>
+            <width>181</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0" colspan="2">
+            <widget class="QLabel" name="label_6">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Частота дискретизации:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLineEdit" name="fsLineEdit">
+             <property name="text">
+              <string>3900</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>80</y>
+            <width>221</width>
+            <height>48</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Коэф.</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" colspan="2">
+            <widget class="QLineEdit" name="fftKLineEdit">
+             <property name="text">
+              <string>2000</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Оконная функция:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" colspan="2">
+            <widget class="QComboBox" name="fftWinComboBox">
+             <item>
+              <property name="text">
+               <string>gaussian</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>kaiser</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>blackman</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>barthann</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>exponential</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
        </widget>
       </widget>
      </item>

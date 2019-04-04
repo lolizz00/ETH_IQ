@@ -7,7 +7,7 @@ from scipy import signal
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
 class Plotter(QtWidgets.QWidget):
 
@@ -51,8 +51,10 @@ class Plotter(QtWidgets.QWidget):
     def initFigure(self):
         self.figure = plt.figure()
         self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
+        layout.addWidget(self.toolbar)
         self.setLayout(layout)
         self.figure.canvas.draw()
 
@@ -216,7 +218,7 @@ class Plotter(QtWidgets.QWidget):
             self.log('Недопустимые параметры оконной функции!')
             return
 
-        self.specPlot.magnitude_spectrum(X, Fs=self.fs, scale='dB', window=win)
+        self.specPlot.magnitude_spectrum(X, Fs=2 * np.pi * self.fs, scale='dB', window=win)
         plt.grid(True)
 
         self.figure.canvas.draw()
@@ -245,11 +247,12 @@ class Plotter(QtWidgets.QWidget):
 
         if self.oscPlotQ:
             self.figure.delaxes(self.oscPlotQ)
-            self.oscPlotQ
+            self.oscPlotQ = None
 
         if self.specPlot:
             self.figure.delaxes(self.specPlot)
             self.specPlot = None
+        self.figure.canvas.draw()
 
     def switchMode(self):
 

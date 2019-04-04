@@ -6,6 +6,8 @@ from Plotter import Plotter
 from PyQt5.QtCore import *
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QSystemTrayIcon
 
 from PlotWidget import PlotWidget
 
@@ -17,12 +19,17 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.filePathLineEdit.setText(QFileDialog.getOpenFileName()[0])
 
     def startUpdate(self):
+
+        try:
+            tout = float(self.updateLineEdit.text())
+            tout = 1000 * tout
+            tout = int(tout)
+        except:
+            self.showErr('Неверный интервал обновления!')
+            return
+
         self.stopPushButton.setEnabled(True)
         self.startPushButton.setEnabled(False)
-
-        tout = float(self.updateLineEdit.text())
-        tout = 1000 * tout
-        tout = int(tout)
 
         self.timer.timeout.connect(self.start)
         self.timer.setInterval(tout)
@@ -37,7 +44,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
         #self.plotwidget.hide()
 
-
     def __init__(self):
         super(MW, self).__init__()
         self.preInitUi()
@@ -46,7 +52,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def showErr(self, text):
         QtWidgets.QMessageBox.critical(self, 'Ошибка!', text)
-
 
     def _switchCnannels(self):
         channels = []
@@ -128,14 +133,23 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.plotwidget = PlotWidget()
         self.plotwidget.plotter.log_signal.connect(self.writeLog)
-
+        self.plotwidget.stop_signal.connect(self.stopPushButtonClicked)
 
         self.timer = QTimer()
 
     def preInitUi(self):
         self.setupUi(self)
         self.setCentralWidget(self.cw)
+        self.initTray()
 
+    def initTray(self):
+        self.icon = QIcon("123.png")
+        self.tray = QSystemTrayIcon()
+        self.tray.setIcon(self.icon)
+        self.tray.show()
+
+    def showMessageTray(self, message):
+        self.tray.showMessage('Этажерка', message,msecs=10)
 
     def writeLog(self, msg):
         old_text = self.logTextEdit.toPlainText()
@@ -150,12 +164,19 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         if not self.updatePlotParams():
             return
 
+        self.showMessageTray('Обновляем графики...')
 
-        self.plotwidget.show()
+
 
         self.updateReaderParams()
         self.datareader.run()
 
+
+        if self.onlySaveCheckBox.isChecked():
+            return 
+
+
+        self.plotwidget.show()   
         sch = 0
         for data in self.datareader.data:
             n = self.datareader.THREAD_N[sch] + 1
@@ -170,9 +191,11 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.specModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotSpec(data.A, n)
 
-
     def stopPushButtonClicked(self):
         self.stopUpdate()
+
+    def startFile(self):
+            pass
 
     def startPushButtonClicked(self):
 
@@ -183,16 +206,23 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.start()
         else:
 
-            if not self.updatePlotParams():
-                return
 
-
+            if not self.suppFileCheckBox.isChecked():
+                if not self.updatePlotParams():
+                    return
+            else:
+               if not  self.plotwidget.plotter.specPlot and not self.plotwidget.plotter.oscPlot and not self.plotwidget.plotter.oscPlotQ:
+                   self.updatePlotParams()
 
             chanN = int(self.chanComboBox.currentText())
             self.datareader.setChanN(chanN)
             self.datareader.readFile(self.filePathLineEdit.text())
-            self.plotwidget.show()
 
+
+            if not len(self.datareader.data):
+                return 
+
+            self.plotwidget.show()
             data = self.datareader.data[0]
 
             if self.oscModeRadioButton.isChecked():

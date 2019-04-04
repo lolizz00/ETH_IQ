@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+int TOUT_FLG = 0;
+
 #define PNT_PER_POS 2048
 int POS_N = 0;
 int POS_N_WRITE = 0;
@@ -53,6 +55,7 @@ void writeFile(int n, uint8_t** buff)
 	FILE *fp;
 	string name = "data/data" + to_string(n) + ".pcm";
 
+	_mkdir("data");
 
 	fp = fopen(name.c_str(), "wb");
 
@@ -162,6 +165,13 @@ void process(UDPSocket* Socket, uint8_t** buff)
 	{
 		int cnt = 0;
 		Socket->RecvFrom(buff[i], BUFSIZE, &cnt);
+
+		if (cnt < 0)
+		{
+			TOUT_FLG = 1;
+			return;
+		}
+
 	}
 }
 
@@ -249,7 +259,7 @@ int _main()
 
 	for (int i = 0; i < 5; i++)
 	{
-		//READER_read(1000);
+		READER_read(10);
 	}
 
 	system("pause");
@@ -277,14 +287,11 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 	return TRUE;
 }
 
-DLLEXPORT int READER_wait()
-{
-	return READY_FLG;
-}
 
-DLLEXPORT void READER_read(int n)
+
+DLLEXPORT int READER_read(int n)
 {
-	READY_FLG = 0;
+	TOUT_FLG = 0;
 
 	POS_N_WRITE = n;
 
@@ -304,6 +311,13 @@ DLLEXPORT void READER_read(int n)
 		sch++;
 
 		run();
+
+		if (TOUT_FLG)
+		{
+			dest();
+			return -1;
+		}
+
 		
 	} while (!verPos());
 
@@ -311,8 +325,9 @@ DLLEXPORT void READER_read(int n)
 	save();
 	dest();
 
+	
 
-	READY_FLG = 1;
+	return 0;
 }
 
 

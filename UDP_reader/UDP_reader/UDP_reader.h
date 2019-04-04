@@ -27,14 +27,14 @@ using namespace std;
 #include <mutex>
 #include <string> 
 
+#include <direct.h>
 
 /* --- Библиотека ---*/
 
 #define DLLEXPORT __declspec(dllexport)
 extern "C"
 {
-	DLLEXPORT void READER_read(int n);
-	DLLEXPORT int READER_wait();
+	DLLEXPORT int READER_read(int n);
 }
 
 #endif //  _UDP_READER_H_

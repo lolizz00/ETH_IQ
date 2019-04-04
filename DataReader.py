@@ -55,9 +55,8 @@ class DataReader(QObject):
 
             self.read = self.dll.READER_read
             self.read.argtypes = [c_int]
-
-            self.wait = self.dll.READER_wait
             self.read.restype = c_int
+
 
             self.log('Библиотека успешно инициализирована')
         except:
@@ -66,12 +65,20 @@ class DataReader(QObject):
 
     def readFile(self, name):
         self.th = []
+        self.data =  []
         self.th.append(DataReaderMin(0))
         self.th[0].setFile(name)
         self.th[0].setChanN(self.CHAN_N)
         self.th[0].start()
         self.th[0].join()
+
+        if self.th[0].ERR_FLG:
+            self.log('Неверный файл!')
+            return
+
         self.data.append(self.th[0].data)
+
+
 
     def initReader(self, chans, point_cnt=50):
         self.THREAD_N = chans
@@ -104,9 +111,9 @@ class DataReader(QObject):
         if self.REALTIME_FLG:
 
             try:
-                with Watchdog(1):
-                    self.read(self.POS_N)
-            except Watchdog:
+                if self.read(self.POS_N) != 0:
+                    raise
+            except:
                 self.log('Устройство не подключено!')
                 return
 
@@ -126,6 +133,9 @@ class DataReader(QObject):
         self.log('Успешно!')
 
 class DataReaderMin(Thread):
+
+    ERR_FLG  = False
+
     def __init__(self, _id):
         super(DataReaderMin, self).__init__()
         self.data = IQ()
@@ -143,8 +153,7 @@ class DataReaderMin(Thread):
     def setFile(self, _file):
         self.file = _file
 
-    def run(self):
-        self.log('Запуск')
+    def procces(self):
         bts = open(self.file, "rb").read()
         self.log('Байты прочитаны')
         stream_len = len(bts) / 2
@@ -152,10 +161,8 @@ class DataReaderMin(Thread):
         val = list(struct.unpack(frmt, bts))
         self.log('Байты переведены')
 
-        #val = val[:-2]
-
         if self.chanN == 1:
-           self.data.addIQ(val)
+            self.data.addIQ(val)
         elif self.chanN == 2:
             I = val[0::2]
             Q = val[1::2]
@@ -166,6 +173,15 @@ class DataReaderMin(Thread):
         self.data.generateA()
         self.data.genreateX()
         self.log('Остановка')
+
+    def run(self):
+        self.ERR_FLG = False
+        self.log('Запуск')
+        try:
+            self.procces()
+        except:
+            self.ERR_FLG = True
+
 
 
 

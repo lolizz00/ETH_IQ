@@ -38,6 +38,15 @@ public:
 		{
 			throw std::system_error(WSAGetLastError(), std::system_category(), "Error opening socket");
 		}
+
+		struct timeval tv;
+		tv.tv_sec = 0;
+		tv.tv_usec = 100000;
+
+		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv)) < 0) 
+		{
+		}
+
 	}
 	~UDPSocket()
 	{

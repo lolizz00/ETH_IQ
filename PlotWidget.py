@@ -1,9 +1,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from plotform import Ui_Plot
+from PyQt5.QtCore import *
+
 
 
 class PlotWidget(QtWidgets.QWidget, Ui_Plot):
+
+    stop_signal = pyqtSignal()
+
+    def clear(self):
+        self.plotter.clearPlots()
+
     def __init__(self, parent=None):
         super(PlotWidget, self).__init__(parent)
         self.preInitUi()
@@ -15,6 +23,7 @@ class PlotWidget(QtWidgets.QWidget, Ui_Plot):
 
     def closeEvent(self, event):
         self.hide()
+        self.stop_signal.emit()
         event.ignore()
 
     def plusPushButtonClicked(self):
@@ -37,9 +46,8 @@ class PlotWidget(QtWidgets.QWidget, Ui_Plot):
         self.layout.addWidget(self.controlGroupBox)
         self.setLayout(self.layout)
 
-
-
     def initSignals(self):
+        self.clearPushButton.clicked.connect(self.clear)
         self.leftPushButton.clicked.connect(self.leftPushButtonClicked)
         self.rightPushButton.clicked.connect(self.rightPushButtonClicked)
         self.plusPushButton.clicked.connect(self.plusPushButtonClicked)
