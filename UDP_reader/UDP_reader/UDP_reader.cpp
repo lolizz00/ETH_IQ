@@ -59,10 +59,31 @@ void writeFile(int n, uint8_t** buff)
 
 	fp = fopen(name.c_str(), "wb");
 
-	for (int i = 0; i < POS_N_WRITE; i++)
+
+	int sch = 0;
+	int i = down_offs[n];
+	while (sch < POS_N_WRITE)
 	{
 		fwrite(buff[i] + 4, POS_SIZE - 4, 1, fp);
+		sch = sch + 1;
+		i = i + 1;
+
+		cout << *(uint32_t*)(buff[i]) << endl;
 	}
+
+	for (; i < (POS_N_WRITE - up_offs[n]); i++)
+	{
+		
+		//if (i == down_offs[n])
+		//{
+		
+		//}
+		
+		
+		
+	}
+
+	cout << endl << endl;
 
 	fclose(fp);
 }
@@ -152,9 +173,6 @@ void calcOffs()
 
 void process(UDPSocket* Socket, uint8_t** buff)
 {
-
-	
-
 	for (int i = 0; i < POS_OFFS; i++)
 	{
 		int cnt = 0;
@@ -257,9 +275,9 @@ void print()
 int _main()
 {
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 1; i++)
 	{
-		READER_read(10);
+		READER_read(1);
 	}
 
 	system("pause");
@@ -295,11 +313,12 @@ DLLEXPORT int READER_read(int n)
 
 	POS_N_WRITE = n;
 
-	if (n < 10)
+	if (n < 70)
 	{
-		n = 50;
+		n = 70;
 	}
 
+	
 	POS_N = n;
 
 	init();
