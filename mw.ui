@@ -196,8 +196,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>311</width>
-           <height>117</height>
+           <width>100</width>
+           <height>30</height>
           </rect>
          </property>
          <attribute name="label">
@@ -279,6 +279,47 @@
         </property>
         <property name="text">
          <string>Стоп!</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="cntSpinBox">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>50</y>
+          <width>73</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>10</number>
+        </property>
+        <property name="maximum">
+         <number>10000000</number>
+        </property>
+        <property name="singleStep">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>100</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_10">
+        <property name="geometry">
+         <rect>
+          <x>97</x>
+          <y>50</y>
+          <width>97</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Кол-во точек:</string>
         </property>
        </widget>
       </widget>
@@ -379,7 +420,7 @@
             <x>10</x>
             <y>30</y>
             <width>171</width>
-            <height>81</height>
+            <height>88</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -465,7 +506,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
             <x>200</x>
@@ -502,13 +543,13 @@
          <attribute name="title">
           <string>Спектограмма</string>
          </attribute>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
             <x>10</x>
             <y>10</y>
             <width>121</width>
-            <height>21</height>
+            <height>22</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -576,7 +617,7 @@
            <rect>
             <x>10</x>
             <y>40</y>
-            <width>181</width>
+            <width>205</width>
             <height>31</height>
            </rect>
           </property>
@@ -679,7 +720,7 @@
          </widget>
         </widget>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>220</x>

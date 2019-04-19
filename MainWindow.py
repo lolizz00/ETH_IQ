@@ -181,7 +181,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         for data in self.datareader.data:
             n = self.datareader.THREAD_N[sch] + 1
             sch = sch + 1
-
+            data.rem(int(self.cntSpinBox.text()))
             if self.oscModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotOsc(data.X, data.A, n)
 
@@ -224,6 +224,10 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.plotwidget.show()
             data = self.datareader.data[0]
+
+
+
+            data.rem(int(self.cntSpinBox.text()))
 
             if self.oscModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotOsc(data.X, data.A, 0)

@@ -131,7 +131,7 @@ class Plotter(QtWidgets.QWidget):
             power_smooth = spl(xnew)
             self.oscPlotI.plot(xnew, power_smooth, label='Канал #' + str(n) + ' - график I')
 
-        self.oscPlotI.legend()
+        self.oscPlotI.legend(loc='upper right')
         self.oscPlotI.grid(True)
 
 
@@ -159,7 +159,7 @@ class Plotter(QtWidgets.QWidget):
             self.oscPlotQ.plot(xnew, power_smooth, label='Канал #' + str(n) + ' - график Q')
 
 
-        self.oscPlotQ.legend()
+        self.oscPlotQ.legend(loc='upper right')
         self.oscPlotQ.grid(True)
         plt.grid(True)
 
@@ -191,7 +191,7 @@ class Plotter(QtWidgets.QWidget):
             power_smooth = spl(xnew)
             self.oscPlot.plot(xnew, power_smooth, label='Канал #' + str(n) + ' - график')
 
-        plt.legend()
+        plt.legend(loc='upper right')
         plt.grid(True)
 
         tmp = Y.max()

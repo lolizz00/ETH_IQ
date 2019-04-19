@@ -92,7 +92,7 @@ class Plotter(QtWidgets.QWidget):
             plt.xlim(0, 500)
             plt.ylim(-1200, 1200)
             plt.grid(True)
-            plt.legend()
+            plt.legend(loc='upper right')
 
         else:
             # --- I
@@ -107,7 +107,7 @@ class Plotter(QtWidgets.QWidget):
             plt.xlim(0, 500)
             plt.ylim(-1200, 1200)
             plt.grid(True)
-            plt.legend()
+            plt.legend(loc='upper right')
 
             # --- Q
             plt.figure(leg + ' Q')
@@ -120,7 +120,7 @@ class Plotter(QtWidgets.QWidget):
             plt.xlim(0, 500)
             plt.ylim(-1200, 1200)
             plt.grid(True)
-            plt.legend()
+            plt.legend(loc='upper right')
 
 
 

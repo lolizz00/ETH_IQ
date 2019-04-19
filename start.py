@@ -25,35 +25,6 @@ def log_uncaught_exceptions(ex_cls, ex, tb):
 import sys
 sys.excepthook = log_uncaught_exceptions
 
-# ---
-
-def plotSpec(X):
-    f_s = 8000
-    plt.figure()
-    win = signal.get_window(('gaussian', 2000), len(X))
-    plt.magnitude_spectrum(X, Fs=f_s, scale='dB', window=win)
-    plt.grid(True)
-
-def plotOsc(X, Y):
-    f_s = 8000
-
-    X = np.array(X)
-    Y = np.array(Y)
-
-    xnew = np.linspace(X.min(), X.max(), len(X) * 10)
-    spl = make_interp_spline(X, Y, k=3)
-    power_smooth = spl(xnew)
-
-    plt.figure()
-    #plt.plot(xnew,power_smooth)
-    plt.scatter(X, Y, s=10)
-    #plt.xlim(0, 500)
-    #plt.ylim(-1200, 1200)
-    plt.grid(True)
-
-
-
-
 def start():
     app = QtWidgets.QApplication(sys.argv)
     mv = MW()
