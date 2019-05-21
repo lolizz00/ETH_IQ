@@ -322,6 +322,38 @@
          <string>Кол-во точек:</string>
         </property>
        </widget>
+       <widget class="QLineEdit" name="addrLineEdit">
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>90</y>
+          <width>113</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>192.168.18.70</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>90</y>
+          <width>97</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Адрес:</string>
+        </property>
+       </widget>
       </widget>
      </item>
      <item row="1" column="1">

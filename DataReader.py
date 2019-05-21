@@ -44,6 +44,9 @@ class DataReader(QObject):
         self.th = []
         self.initDLL()
 
+
+
+
     def log(self, msg):
         msg = 'Datareader :: ' + msg
         self.log_signal.emit(msg)
@@ -54,12 +57,12 @@ class DataReader(QObject):
             self.dll = cdll.LoadLibrary('UDP_reader.dll')
 
             self.read = self.dll.READER_read
-            self.read.argtypes = [c_int]
+            self.read.argtypes = [c_int, c_char_p]
             self.read.restype = c_int
-
 
             self.log('Библиотека успешно инициализирована')
         except:
+            raise
             self.log('Ошибка инициализации библиотеки!')
 
 
@@ -80,11 +83,13 @@ class DataReader(QObject):
 
 
 
-    def initReader(self, chans, point_cnt=50):
+    def initReader(self, chans, point_cnt=50,addr=""):
         self.THREAD_N = chans
         self.POS_N = point_cnt
 
         self.th = []
+
+        self.addr = addr
 
         sch = 0
         for n in self.THREAD_N:
@@ -111,11 +116,11 @@ class DataReader(QObject):
         if self.REALTIME_FLG:
 
             try:
-                if self.read(self.POS_N) != 0:
+                if self.read(self.POS_N,c_char_p (self.addr.encode ('utf-8'))) != 0:
                     raise
             except:
                 self.log('Устройство не подключено!')
-                return
+                raise
 
 
 

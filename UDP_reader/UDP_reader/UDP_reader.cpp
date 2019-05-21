@@ -4,6 +4,9 @@
 
 int TOUT_FLG = 0;
 
+
+char* ADDR;
+
 #define PNT_PER_POS 2048
 int POS_N = 0;
 int POS_N_WRITE = 0;
@@ -68,7 +71,7 @@ void writeFile(int n, uint8_t** buff)
 		sch = sch + 1;
 		i = i + 1;
 
-		cout << *(uint32_t*)(buff[i]) << endl;
+		//cout << *(uint32_t*)(buff[i]) << endl;
 	}
 
 	for (; i < (POS_N_WRITE - up_offs[n]); i++)
@@ -83,7 +86,7 @@ void writeFile(int n, uint8_t** buff)
 		
 	}
 
-	cout << endl << endl;
+	//cout << endl << endl;
 
 	fclose(fp);
 }
@@ -272,7 +275,9 @@ void print()
 
 }
 
-int _main()
+#ifdef _DEBUG
+
+int main()
 {
 
 	for (int i = 0; i < 1; i++)
@@ -284,7 +289,7 @@ int _main()
 	return 0;
 }
 
-/* ÍÀ×ÀËÎ ÑÎÇÄÀÍÈß ÁÈÁËÈÎÒÅÊÈ*/
+#else
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 {
@@ -305,11 +310,17 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 	return TRUE;
 }
 
+#endif // _DEBUG
 
 
-DLLEXPORT int READER_read(int n)
+DLLEXPORT int READER_read(int n, char* _ADDR)
 {
 	TOUT_FLG = 0;
+
+	ADDR = _ADDR;
+
+
+	cout << "ADDR: " << ADDR << endl;
 
 	POS_N_WRITE = n;
 
@@ -326,7 +337,8 @@ DLLEXPORT int READER_read(int n)
 	int sch = 0;
 	do
 	{
-		//cout << sch << endl;
+	
+		cout << "Try to read..." << endl;
 		sch++;
 
 		run();
@@ -334,11 +346,25 @@ DLLEXPORT int READER_read(int n)
 		if (TOUT_FLG)
 		{
 			dest();
+			cout << "Timeout!" << endl;
 			return -1;
 		}
 
 		
-	} while (!verPos());
+
+
+		if (verPos())
+		{
+			cout << "Ver --- OK" << endl;
+			break;
+		}
+		else
+		{
+			cout << "Verr --- ERR" << endl;
+		}
+
+	} while (1);
+
 
 	calcOffs();
 	save();

@@ -96,6 +96,7 @@ class Plotter(QtWidgets.QWidget):
             self.XLIM_max = self.XLIM_max - self.K_X
 
             if self.mode == 'iq':
+                passs
                 self.oscPlotQ.set_xlim(self.XLIM_min, self.XLIM_max)
                 self.oscPlotI.set_xlim(self.XLIM_min, self.XLIM_max)
             else:
@@ -139,7 +140,7 @@ class Plotter(QtWidgets.QWidget):
         if tmp > self.maxOscValI:
             self.maxOscValI = tmp
 
-        self.oscPlotI.set_ylim(-self.maxOscValI - self.K_Y, self.maxOscValI + self.K_Y)
+        #self.oscPlotI.set_ylim(-self.maxOscValI - self.K_Y, self.maxOscValI + self.K_Y)
 
         self.YLIM_min = -self.maxOscValI - self.K_Y
         self.YLIM_max = self.maxOscValI + self.K_Y
@@ -167,7 +168,7 @@ class Plotter(QtWidgets.QWidget):
         if tmp > self.maxOscValQ:
             self.maxOscValQ = tmp
 
-        self.oscPlotQ.set_ylim(-self.maxOscValQ - self.K_Y, self.maxOscValQ + self.K_Y)
+        #self.oscPlotQ.set_ylim(-self.maxOscValQ - self.K_Y, self.maxOscValQ + self.K_Y)
 
         self.YLIM_min = -self.maxOscValQ - self.K_Y
         self.YLIM_max = self.maxOscValQ + self.K_Y
@@ -198,7 +199,7 @@ class Plotter(QtWidgets.QWidget):
         if tmp > self.maxOscVal:
             self.maxOscVal = tmp
 
-        plt.ylim(-self.maxOscVal - self.K_Y, self.maxOscVal + self.K_Y)
+        #plt.ylim(-self.maxOscVal - self.K_Y, self.maxOscVal + self.K_Y)
 
         self.YLIM_min = -self.maxOscVal - self.K_Y
         self.YLIM_max = self.maxOscVal + self.K_Y

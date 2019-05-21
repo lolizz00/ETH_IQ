@@ -1,3 +1,6 @@
 ﻿  UDP_reader.cpp
+  dllmain.cpp
+  Создание кода...
+     Создается библиотека H:\NEW_ETH_IQ\UDP_reader\x64\Debug\UDP_reader.lib и объект H:\NEW_ETH_IQ\UDP_reader\x64\Debug\UDP_reader.exp
   UDP_reader.vcxproj -> H:\NEW_ETH_IQ\UDP_reader\x64\Debug\UDP_reader.exe
   UDP_reader.vcxproj -> H:\NEW_ETH_IQ\UDP_reader\x64\Debug\UDP_reader.pdb (Partial PDB)

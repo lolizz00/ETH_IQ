@@ -8,6 +8,8 @@
 
 
 
+#ifndef _DEBUG
+
 BOOL APIENTRY main(HMODULE hModule,
 	DWORD  ul_reason_for_call,
 	LPVOID lpReserved
@@ -23,3 +25,5 @@ BOOL APIENTRY main(HMODULE hModule,
 	}
 	return TRUE;
 }
+
+#endif // !_DEBUG

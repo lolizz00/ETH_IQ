@@ -14,7 +14,7 @@ using namespace std;
 
 #define BUFLEN 8096
 #define BUFSIZE 10000
-#define ADDR "192.168.18.70"
+extern char* ADDR;
 #define PORT 4000
 
 
@@ -34,7 +34,7 @@ using namespace std;
 #define DLLEXPORT __declspec(dllexport)
 extern "C"
 {
-	DLLEXPORT int READER_read(int n);
+	DLLEXPORT int READER_read(int n,char* _ADDR);
 }
 
 #endif //  _UDP_READER_H_

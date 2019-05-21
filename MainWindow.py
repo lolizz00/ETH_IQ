@@ -92,7 +92,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             # ---
 
             self.datareader.setChanN(chanN)
-            self.datareader.initReader(channels, pointCnt)
+            self.datareader.initReader(channels, pointCnt, self.addrLineEdit.text())
 
         except:
             raise
