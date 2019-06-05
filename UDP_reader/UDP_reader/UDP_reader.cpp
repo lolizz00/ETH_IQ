@@ -63,14 +63,26 @@ void writeFile(int n, uint8_t** buff)
 	fp = fopen(name.c_str(), "wb");
 
 
+	int sh = 0;
+
+
+	cout << "-----" << endl;
+	cout << "N chan: " << n << endl;
+
 	int sch = 0;
-	int i = down_offs[n];
-	while (sch < POS_N_WRITE)
+
+
+	cout << "Down offs: " << down_offs[n] << "\tUp offs:" << up_offs[n] << endl;
+	for(int i = down_offs[n]; i < POS_N_WRITE - up_offs[n];i++)
 	{
+		sh++;
 		fwrite(buff[i] + 4, POS_SIZE - 4, 1, fp);
 		sch = sch + 1;
 		i = i + 1;
 	}
+
+	cout << "Data len: " << sh << endl;
+
 
 	fclose(fp);
 }
@@ -342,7 +354,7 @@ DLLEXPORT int READER_read(int n, char* _ADDR)
 	save();
 	dest();
 
-	
+	cout << "Finished!" << endl;
 
 	return 0;
 }

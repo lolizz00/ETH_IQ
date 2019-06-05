@@ -1,8 +1,9 @@
-﻿  dllmain.cpp
-  UDP_reader.cpp
+﻿  UDP_reader.cpp
      Создается библиотека H:\NEW_ETH_IQ\UDP_reader\Release\UDP_reader.lib и объект H:\NEW_ETH_IQ\UDP_reader\Release\UDP_reader.exp
   Создание кода
-  All 494 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  3 of 494 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   UDP_reader.vcxproj -> H:\NEW_ETH_IQ\UDP_reader\Release\UDP_reader.dll
   UDP_reader.vcxproj -> H:\NEW_ETH_IQ\UDP_reader\Release\UDP_reader.pdb (Full PDB)
