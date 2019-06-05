@@ -70,23 +70,7 @@ void writeFile(int n, uint8_t** buff)
 		fwrite(buff[i] + 4, POS_SIZE - 4, 1, fp);
 		sch = sch + 1;
 		i = i + 1;
-
-		//cout << *(uint32_t*)(buff[i]) << endl;
 	}
-
-	for (; i < (POS_N_WRITE - up_offs[n]); i++)
-	{
-		
-		//if (i == down_offs[n])
-		//{
-		
-		//}
-		
-		
-		
-	}
-
-	//cout << endl << endl;
 
 	fclose(fp);
 }
@@ -137,11 +121,7 @@ void calcMin()
 	for (int i = 0; i < PORT_N; i++)
 	{
 		min[i] = *(uint32_t*)buffs[i][0];
-		//cout << min[i] << " ";
 	}
-
-	//cout << endl;
-
 }
 
 void calcMax()
@@ -149,10 +129,7 @@ void calcMax()
 	for (int i = 0; i < PORT_N; i++)
 	{
 		max[i] = *(uint32_t*)buffs[i][POS_N - 1];
-		//cout << max[i] << " ";
 	}
-
-	//cout << endl;
 }
 
 void calcOffs()
@@ -168,8 +145,6 @@ void calcOffs()
 	{
 		down_offs[i] = min_arr_max - min[i];
 		up_offs[i] = max[i] - max_arr_min;
-
-		//cout << down_offs[i] << " " << up_offs[i] << endl;
 	}
 
 }
@@ -349,9 +324,6 @@ DLLEXPORT int READER_read(int n, char* _ADDR)
 			cout << "Timeout!" << endl;
 			return -1;
 		}
-
-		
-
 
 		if (verPos())
 		{
