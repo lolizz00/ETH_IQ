@@ -9,6 +9,7 @@ import sys
 from MainWindow import MW
 from PyQt5 import QtWidgets
 
+#  1622
 
 # --- Нормальный вывод ошибок
 def log_uncaught_exceptions(ex_cls, ex, tb):
@@ -28,7 +29,10 @@ sys.excepthook = log_uncaught_exceptions
 def start():
     app = QtWidgets.QApplication(sys.argv)
     mv = MW()
-    mv.show()
+
+    mv.showMinimized()
+    #mv.show()
+
     sys.exit(app.exec_())
 
 

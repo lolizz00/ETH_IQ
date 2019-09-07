@@ -69,6 +69,7 @@ public:
 		ret = WSAGetLastError();
 		
 
+
 		return ret;
 	}
 	void Bind(char* ip, unsigned short port)

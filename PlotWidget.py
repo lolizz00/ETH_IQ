@@ -26,6 +26,8 @@ class PlotWidget(QtWidgets.QWidget, Ui_Plot):
         self.stop_signal.emit()
         event.ignore()
 
+
+
     def plusPushButtonClicked(self):
         self.plotter.plus()
 

@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+﻿from PyQt5 import QtCore, QtGui, QtWidgets
 from mw import Ui_MainWindow
 
 from DataReader import DataReader
@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QSystemTrayIcon
 from PlotWidget import PlotWidget
 
 import numpy as np
+
 
 class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
@@ -49,6 +50,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.preInitUi()
         self.connectSignals()
         self.initClass()
+        self.hide()
 
     def showErr(self, text):
         QtWidgets.QMessageBox.critical(self, 'Ошибка!', text)
@@ -149,7 +151,8 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tray.show()
 
     def showMessageTray(self, message):
-        self.tray.showMessage('Этажерка', message,msecs=10)
+	    pass
+        #self.tray.showMessage('Этажерка', message,msecs=10)
 
     def writeLog(self, msg):
         old_text = self.logTextEdit.toPlainText()
@@ -182,6 +185,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             n = self.datareader.THREAD_N[sch] + 1
             sch = sch + 1
             data.rem(int(self.cntSpinBox.text()))
+            self.plotwidget.plotter.oscSize = int(self.cntSpinBox.value())
             if self.oscModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotOsc(data.X, data.A, n)
 

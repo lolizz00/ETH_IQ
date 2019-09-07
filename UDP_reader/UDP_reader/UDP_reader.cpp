@@ -32,6 +32,9 @@ int up_offs[PORT_N] = { 0 };
 int min[PORT_N] = { 0 };
 int max[PORT_N] = { 0 };
 
+
+#define OFFS 2
+
 int verPos()
 {
 	int ret = 1;
@@ -181,6 +184,15 @@ void process(UDPSocket* Socket, uint8_t** buff)
 		}
 
 	}
+	for (int i = 0; i < POS_N; i++)
+	{
+		buff[i] = buff[i] + OFFS;
+	}
+
+
+
+
+
 }
 
 uint8_t** createBuff()
@@ -226,7 +238,7 @@ void dest()
 {
 	for (int i = 0; i < PORT_N; i++)
 	{
-		destBuff(buffs[i]);
+		destBuff(buffs[i] - OFFS);
 		sockets[i].close();
 	}
 }
@@ -245,6 +257,8 @@ void run()
 	{
 		threads[i].join();
 	}
+
+
 }
 
 void print()
