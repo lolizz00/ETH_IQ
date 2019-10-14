@@ -1,8 +1,9 @@
-﻿     Создается библиотека H:\NEW_ETH_IQ\UDP_reader\x64\Release\UDP_reader.lib и объект H:\NEW_ETH_IQ\UDP_reader\x64\Release\UDP_reader.exp
+﻿  UDP_reader.cpp
+     Создается библиотека H:\NEW_ETH_IQ\UDP_reader\x64\Release\UDP_reader.lib и объект H:\NEW_ETH_IQ\UDP_reader\x64\Release\UDP_reader.exp
   Создание кода
-  0 of 494 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+  5 of 494 functions ( 1.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    8 functions had inline decision re-evaluated but remain unchanged
+    4 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   UDP_reader.vcxproj -> H:\NEW_ETH_IQ\UDP_reader\x64\Release\UDP_reader.dll
   UDP_reader.vcxproj -> H:\NEW_ETH_IQ\UDP_reader\x64\Release\UDP_reader.pdb (Full PDB)

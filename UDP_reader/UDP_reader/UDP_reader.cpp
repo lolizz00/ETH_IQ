@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+
+using namespace std;
+
 int TOUT_FLG = 0;
 
 
@@ -33,7 +36,7 @@ int min[PORT_N] = { 0 };
 int max[PORT_N] = { 0 };
 
 
-#define OFFS 2
+//#define OFFS 2
 
 int verPos()
 {
@@ -46,8 +49,13 @@ int verPos()
 			uint32_t a = *(uint32_t*)buffs[j][i];
 			uint32_t b = *(uint32_t*)buffs[j][i + 1];
 
+
+			//cout << a <<  " " << b << endl;
+
 			if ((a + 1) != b)
 			{
+				//break;
+				return 0;
 				ret = 0;
 			}
 		}
@@ -184,10 +192,13 @@ void process(UDPSocket* Socket, uint8_t** buff)
 		}
 
 	}
-	for (int i = 0; i < POS_N; i++)
+
+	/*WTF ???? */
+
+	/*for (int i = 0; i < POS_N; i++)
 	{
 		buff[i] = buff[i] + OFFS;
-	}
+	}*/
 
 
 
@@ -238,7 +249,7 @@ void dest()
 {
 	for (int i = 0; i < PORT_N; i++)
 	{
-		destBuff(buffs[i] - OFFS);
+		destBuff(buffs[i] /*- OFFS*/);
 		sockets[i].close();
 	}
 }
@@ -336,6 +347,7 @@ DLLEXPORT int READER_read(int n, char* _ADDR)
 	init();
 
 	int sch = 0;
+
 	do
 	{
 	
