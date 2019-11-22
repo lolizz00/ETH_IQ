@@ -47,123 +47,20 @@
    <property name="title">
     <string>Управление</string>
    </property>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QPushButton" name="clearPushButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>120</width>
-      <height>27</height>
+      <x>30</x>
+      <y>30</y>
+      <width>75</width>
+      <height>23</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="leftPushButton">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>25</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>25</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>left.png</normaloff>left.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="rightPushButton">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>25</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>25</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>right.png</normaloff>right.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="minusPushButton">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>25</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>25</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>minus.jpg</normaloff>minus.jpg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="plusPushButton">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>25</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>25</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>plus.jpg</normaloff>plus.jpg</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="text">
+     <string>Очистить</string>
+    </property>
    </widget>
-   <widget class="QPushButton" name="clearPushButton">
+   <widget class="QPushButton" name="helpPushButton">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -173,20 +70,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Очистить</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>20</y>
-      <width>521</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Для пользовательского масштабирования нажимите &lt;/span&gt;&lt;img src=&quot;help.png&quot;/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; и&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;удерживайте правую кнопку мыши, двигая паралельно масштабируемой оси. &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>Справка</string>
     </property>
    </widget>
   </widget>

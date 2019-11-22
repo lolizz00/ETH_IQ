@@ -11,6 +11,12 @@ from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as Navigatio
 
 # остройка графиков
 
+
+# оставляем только нужные кнопки
+class MyNavigationToolbar(NavigationToolbar):
+    toolitems = [t for t in NavigationToolbar.toolitems if
+                 t[0] in ('Home', 'Pan', 'Zoom', 'Save')]
+
 class Plotter(QtWidgets.QWidget):
 
     log_signal = pyqtSignal(str)
@@ -56,7 +62,9 @@ class Plotter(QtWidgets.QWidget):
     def initFigure(self):
         self.figure = plt.figure()
         self.canvas = FigureCanvas(self.figure)
-        self.toolbar = NavigationToolbar(self.canvas, self)
+        self.toolbar = MyNavigationToolbar(self.canvas, self)
+
+
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
         layout.addWidget(self.toolbar)
@@ -237,7 +245,7 @@ class Plotter(QtWidgets.QWidget):
             return
 
         # строим
-        self.specPlot.magnitude_spectrum(X, Fs=2 * np.pi * self.fs, scale='dB', window=win, label='Канал #' + str(n))
+        self.specPlot.magnitude_spectrum(X, Fs=2 * np.pi * self.fs, scale='dB', window=win, label='Канал #' + str(n), alpha=.5)
 
 
         # легенда

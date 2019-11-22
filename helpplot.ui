@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>630</width>
+    <height>160</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>630</width>
+    <height>160</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>630</width>
+    <height>160</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Кнопки работы с графиками</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>20</y>
+     <width>550</width>
+     <height>120</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>550</width>
+     <height>120</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>550</width>
+     <height>120</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>&lt;center&gt;
+	&lt;img src=&quot;toolbar.png&quot;&gt;&lt;/img&gt;
+&lt;/center&gt;
+
+&lt;ol&gt;
+	&lt;li&gt;Вернуться к исходному виду&lt;/li&gt;
+	&lt;li&gt;Зажатая ЛКМ - перемещение графика. Зажатая ПКМ  - масштабирование осей &lt;/li&gt;
+	&lt;li&gt;Зажатая ЛКМ - увеличение в выбранной области. Зажатая ПКМ - уменьшение выбранной области.&lt;/li&gt;
+&lt;li&gt;Сохранить график&lt;/li&gt;
+	
+&lt;/ol&gt;
+</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -2,8 +2,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from plotform import Ui_Plot
 from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 
+from helpplot import Ui_Form as helpPlotUI
 
 class PlotWidget(QtWidgets.QWidget, Ui_Plot):
 
@@ -11,6 +13,12 @@ class PlotWidget(QtWidgets.QWidget, Ui_Plot):
 
     def clear(self):
         self.plotter.clearPlots()
+
+    def helpPushButtonClicked(self):
+        self.helpui = helpPlotUI()
+        self.wid = QWidget()
+        self.helpui.setupUi(self.wid)
+        self.wid.show()
 
     def __init__(self, parent=None):
         super(PlotWidget, self).__init__(parent)
@@ -27,19 +35,6 @@ class PlotWidget(QtWidgets.QWidget, Ui_Plot):
         event.ignore()
 
 
-
-    def plusPushButtonClicked(self):
-        self.plotter.plus()
-
-    def minusPushButtonClicked(self):
-        self.plotter.minus()
-
-    def leftPushButtonClicked(self):
-        self.plotter.moveLeft()
-
-    def rightPushButtonClicked(self):
-        self.plotter.moveRight()
-
     def preInitUi(self):
         self.setupUi(self)
 
@@ -50,7 +45,4 @@ class PlotWidget(QtWidgets.QWidget, Ui_Plot):
 
     def initSignals(self):
         self.clearPushButton.clicked.connect(self.clear)
-        self.leftPushButton.clicked.connect(self.leftPushButtonClicked)
-        self.rightPushButton.clicked.connect(self.rightPushButtonClicked)
-        self.plusPushButton.clicked.connect(self.plusPushButtonClicked)
-        self.minusPushButton.clicked.connect(self.minusPushButtonClicked)
+        self.helpPushButton.clicked.connect(self.helpPushButtonClicked)

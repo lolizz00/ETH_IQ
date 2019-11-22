@@ -18,6 +18,7 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
         Form.setSizePolicy(sizePolicy)
+        Form.setMinimumSize(QtCore.QSize(495, 150))
         Form.setMaximumSize(QtCore.QSize(495, 150))
         self.label = QtWidgets.QLabel(Form)
         self.label.setGeometry(QtCore.QRect(30, 0, 470, 140))
