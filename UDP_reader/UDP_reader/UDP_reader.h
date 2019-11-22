@@ -15,7 +15,9 @@ using namespace std;
 #define BUFLEN 8096
 #define BUFSIZE 10000
 extern char* ADDR;
-#define PORT 4000
+
+
+#define PORT 4000 /* Начальный номер порта */
 
 
 // ---

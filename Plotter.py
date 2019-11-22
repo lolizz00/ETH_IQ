@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
+# остройка графиков
+
 class Plotter(QtWidgets.QWidget):
 
     log_signal = pyqtSignal(str)
@@ -32,6 +34,7 @@ class Plotter(QtWidgets.QWidget):
     def clear(self):
         pass
 
+    # запись сообщений в лог
     def log(self, msg):
         msg = 'PLotter :: ' + msg
         self.log_signal.emit(msg)
@@ -41,13 +44,15 @@ class Plotter(QtWidgets.QWidget):
         self.initFigure()
         self.initPlots()
 
-
+    # создаем нужные типы графиков
     def initPlots(self):
         self.oscPlot = None
         self.oscPlotI = None
         self.oscPlotQ = None
         self.specPlot = None
 
+
+    # для matplolib, разметка и тд
     def initFigure(self):
         self.figure = plt.figure()
         self.canvas = FigureCanvas(self.figure)
@@ -117,30 +122,33 @@ class Plotter(QtWidgets.QWidget):
 
             self.figure.canvas.draw()
 
+    # отстройка отдельно I и Q
     def plotIQ(self, X, I, Q, n):
 
 
         # --- I
         leg = 'Канал #' + str(n) + ' - осцилограмма I'
 
-        if self.showSample:
+        if self.showSample: # если отображаем точки, s - рамер точки
             self.oscPlotI.scatter(X, I, s=10, label='Канал #' + str(n) + ' - сeмплы I')
 
-        if self.showSpline:
+        if self.showSpline: # если отображаем графки
+            # магия построения графиков из scipy
             xnew = np.linspace(X.min(), X.max(), len(X) * 10)
             spl = make_interp_spline(X, I, k=3)
             power_smooth = spl(xnew)
             self.oscPlotI.plot(xnew, power_smooth, label='Канал #' + str(n) + ' - график I')
 
+
+        # легенда справа сверху
         self.oscPlotI.legend(loc='upper right')
         self.oscPlotI.grid(True)
 
 
+        # масштабируем
         tmp = I.max()
         if tmp > self.maxOscValI:
             self.maxOscValI = tmp
-
-        #self.oscPlotI.set_ylim(-self.maxOscValI - self.K_Y, self.maxOscValI + self.K_Y)
 
         self.YLIM_min = -self.maxOscValI - self.K_Y
         self.YLIM_max = self.maxOscValI + self.K_Y
@@ -150,10 +158,11 @@ class Plotter(QtWidgets.QWidget):
         self.figure.canvas.draw()
 
         # --- Q
-        if self.showSample:
+        if self.showSample: # отображаем точки, s - размер точки
             self.oscPlotQ.scatter(X, Q, s=10, label='Канал #' + str(n) + ' - сeмплы Q')
 
-        if self.showSpline:
+        if self.showSpline: # график
+            # магия scipy
             xnew = np.linspace(X.min(), X.max(), len(X) * 10)
             spl = make_interp_spline(X, Q, k=3)
             power_smooth = spl(xnew)
@@ -178,6 +187,7 @@ class Plotter(QtWidgets.QWidget):
         self.figure.canvas.draw()
 
     def plotOsc(self, X, Y, n):
+
         if self.mode != 'osc':
             return
 
@@ -192,14 +202,17 @@ class Plotter(QtWidgets.QWidget):
             power_smooth = spl(xnew)
             self.oscPlot.plot(xnew, power_smooth, label='Канал #' + str(n) + ' - график')
 
+        # легенда справа сверху
         plt.legend(loc='upper right')
         plt.grid(True)
 
+        # масштабируем
         tmp = Y.max()
         if tmp > self.maxOscVal:
             self.maxOscVal = tmp
 
         #plt.ylim(-self.maxOscVal - self.K_Y, self.maxOscVal + self.K_Y)
+
 
         self.YLIM_min = -self.maxOscVal - self.K_Y
         self.YLIM_max = self.maxOscVal + self.K_Y
@@ -208,22 +221,32 @@ class Plotter(QtWidgets.QWidget):
 
         self.figure.canvas.draw()
 
+    # отстройка спектограмы
     def plotSpec(self, X, n):
 
         try:
-            if self.fftWin in self.windows_need_k:
-                win = signal.get_window((self.fftWin, self.k), len(X))
+            if self.fftWin in self.windows_need_k: # если окно требует коэф.
+
+                if self.k == None:
+                    raise
+                win = signal.get_window((self.fftWin, self.k), len(X)) # вызываем с коэф.
             else:
                 win = signal.get_window(self.fftWin, len(X))
         except:
             self.log('Недопустимые параметры оконной функции!')
             return
 
-        self.specPlot.magnitude_spectrum(X, Fs=2 * np.pi * self.fs, scale='dB', window=win)
+        # строим
+        self.specPlot.magnitude_spectrum(X, Fs=2 * np.pi * self.fs, scale='dB', window=win, label='Канал #' + str(n))
+
+
+        # легенда
+        plt.legend(loc='upper right')
         plt.grid(True)
 
         self.figure.canvas.draw()
 
+    # установка параметров, сохраняем себе
     def setParams(self, lst):
         self.mode = lst['mode']
         self.showSample = lst['showSample']
@@ -237,6 +260,7 @@ class Plotter(QtWidgets.QWidget):
 
         self.switchMode()
 
+    # очистка графиковы
     def clearPlots(self):
         if self.oscPlot:
             self.figure.delaxes(self.oscPlot)
@@ -255,6 +279,8 @@ class Plotter(QtWidgets.QWidget):
             self.specPlot = None
         self.figure.canvas.draw()
 
+
+    # смена режима графиков
     def switchMode(self):
 
         self.clearPlots()

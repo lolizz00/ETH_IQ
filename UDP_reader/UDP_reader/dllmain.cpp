@@ -6,6 +6,10 @@
 #include <windows.h>
 
 
+/*
+	Библиотека требует
+*/
+
 
 
 #ifndef _DEBUG

@@ -13,14 +13,27 @@ from PlotWidget import PlotWidget
 
 import numpy as np
 
+from helpspec import Ui_Form as helpSpecUI
 
 class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
+
+    def windHelpPushButtonClicked(self):
+
+        self.helpui =  helpSpecUI()
+        self.wid = QWidget()
+        self.helpui.setupUi(self.wid)
+        self.wid.show()
+
+    # выбор файла для остройки из него
     def selectFilePushButtonClicked(self):
         self.filePathLineEdit.setText(QFileDialog.getOpenFileName()[0])
 
+
+    # при нажатии на кноку автообновление
     def startUpdate(self):
 
+        # берем интервал обновления и проверяем
         try:
             tout = float(self.updateLineEdit.text())
             tout = 1000 * tout
@@ -29,22 +42,29 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             self.showErr('Неверный интервал обновления!')
             return
 
+        # разрешаем остановку
         self.stopPushButton.setEnabled(True)
         self.startPushButton.setEnabled(False)
 
+        # запускаем считывание по таймеру
         self.timer.timeout.connect(self.start)
         self.timer.setInterval(tout)
         self.timer.start()
 
         self.start()
 
+    # отсановка автообновления
     def stopUpdate(self):
+        # меняем кнопочки
         self.stopPushButton.setEnabled(False)
         self.startPushButton.setEnabled(True)
+
+        # останавливаем таймер
         self.timer.stop()
 
         #self.plotwidget.hide()
 
+    # ясно
     def __init__(self):
         super(MW, self).__init__()
         self.preInitUi()
@@ -52,9 +72,35 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.initClass()
         self.hide()
 
+    # отображение ошибки
     def showErr(self, text):
         QtWidgets.QMessageBox.critical(self, 'Ошибка!', text)
 
+    # выборка каналов для Спектра
+    def switchChannelsSpec(self):
+        channels = []
+
+        if self.specChan1checkBox.isChecked():
+            channels.append(0)
+        if self.specChan2checkBox.isChecked():
+            channels.append(1)
+        if self.specChan3checkBox.isChecked():
+            channels.append(2)
+        if self.specChan4checkBox.isChecked():
+            channels.append(3)
+        if self.specChan5checkBox.isChecked():
+            channels.append(4)
+        if self.specChan6checkBox.isChecked():
+            channels.append(5)
+        if self.specChan7checkBox.isChecked():
+            channels.append(6)
+        if self.specChan8checkBox.isChecked():
+            channels.append(7)
+
+
+        return channels
+
+    # выборка каналов для Осцилограммы
     def _switchCnannels(self):
         channels = []
 
@@ -77,6 +123,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
         return channels
 
+    # обновление параметров чтения
     def updateReaderParams(self):
         try:
 
@@ -85,7 +132,10 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
                 if not len(channels):
                     raise
             else:
-                channels = [int(self.specChanComboBox.currentText()) - 1]
+                channels = self.switchChannelsSpec()
+
+                if not len(channels):
+                    raise
 
             pointCnt = self.pointCntSpinBox.value()
 
@@ -97,9 +147,11 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             self.datareader.initReader(channels, pointCnt, self.addrLineEdit.text())
 
         except:
-            raise
             self.showErr('Неверные параметры!')
 
+
+    # обновление параметров графиков
+    # в случае неверных параметров возвращает False
     def updatePlotParams(self):
         try:
             lst = {}
@@ -115,7 +167,18 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             lst['showSample'] = self.showSampleCheckBox.isChecked()
             lst['showSpline'] = self.showSplineCheckBox.isChecked()
             lst['fftWin'] = self.fftWinComboBox.currentText()
-            lst['k'] = float(self.fftKLineEdit.text())
+
+
+            txt = self.fftKLineEdit.text()
+            try:
+                lst['k'] = float(txt)
+            except:
+                lst['k'] = None
+
+
+
+
+
             lst['fs'] = int(self.fsLineEdit.text())
 
 
@@ -127,41 +190,51 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
         return True
 
+    # вспомогательные классы
     def initClass(self):
+        # читалка
         self.datareader = DataReader()
         self.datareader.log_signal.connect(self.writeLog)
 
-
-
+        # графики
         self.plotwidget = PlotWidget()
         self.plotwidget.plotter.log_signal.connect(self.writeLog)
         self.plotwidget.stop_signal.connect(self.stopPushButtonClicked)
 
+        # таймер для регулярного обновления
         self.timer = QTimer()
 
+    # включаем GUI
     def preInitUi(self):
         self.setupUi(self)
         self.setCentralWidget(self.cw)
         self.initTray()
 
+
+    # работа в свернутом режиме
     def initTray(self):
         self.icon = QIcon("123.png")
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(self.icon)
         self.tray.show()
 
+    # отбражение сообщений из свернутого режима. Сказали отключить, т.к. бесит
     def showMessageTray(self, message):
-	    pass
-        #self.tray.showMessage('Этажерка', message,msecs=10)
+        return
+        self.tray.showMessage('Этажерка', message,msecs=10)
 
+    # запись в лог
     def writeLog(self, msg):
         old_text = self.logTextEdit.toPlainText()
 
+        # пустой
         if old_text == '':
             self.logTextEdit.setText(msg)
         else:
-            self.logTextEdit.setText(old_text + '\n' + msg)
+            self.logTextEdit.setText(old_text + '\n' + msg) # дополняем
 
+
+    # запуск считыания
     def start(self):
 
         if not self.updatePlotParams():
@@ -170,22 +243,28 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.showMessageTray('Обновляем графики...')
 
 
-
+        # выставляем параметры DataReader
         self.updateReaderParams()
+
+        # пускаем
         self.datareader.run()
 
-
+        # если только считать файлы
         if self.onlySaveCheckBox.isChecked():
             return 
 
 
+        # ображаем графиики
         self.plotwidget.show()   
         sch = 0
-        for data in self.datareader.data:
+        for data in self.datareader.data: # перебираем каналы
+
             n = self.datareader.THREAD_N[sch] + 1
             sch = sch + 1
             data.rem(int(self.cntSpinBox.text()))
+
             self.plotwidget.plotter.oscSize = int(self.cntSpinBox.value())
+
             if self.oscModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotOsc(data.X, data.A, n)
 
@@ -195,44 +274,60 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.specModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotSpec(data.A, n)
 
+    # нажатие на кнопку стоп
     def stopPushButtonClicked(self):
         self.stopUpdate()
 
+    # рудимент
     def startFile(self):
             pass
 
+    # нажатие на кнопку запуск
     def startPushButtonClicked(self):
 
+        # если чтение в режиме реального времени
         if self.modeToolBox.currentWidget() == self.realPage:
             if self.updateCheckBox.isChecked():
-                self.startUpdate()
+                self.startUpdate() # циклический запуск
             else:
-                self.start()
+                self.start() # одиночный запуск
         else:
 
+            # если чтение из файла
 
-            if not self.suppFileCheckBox.isChecked():
-                if not self.updatePlotParams():
+
+            if not self.suppFileCheckBox.isChecked(): # если выбрано "удерживать прошлый график"
+                if not self.updatePlotParams(): # если неверные параметры графика, выходим
                     return
             else:
-               if not  self.plotwidget.plotter.specPlot and not self.plotwidget.plotter.oscPlot and not self.plotwidget.plotter.oscPlotQ:
-                   self.updatePlotParams()
+               if not self.plotwidget.plotter.specPlot and not self.plotwidget.plotter.oscPlot and not self.plotwidget.plotter.oscPlotQ: # если график еще не создан
+                   self.updatePlotParams() # создаем
 
+
+            # выбираем режим IQ I
             chanN = int(self.chanComboBox.currentText())
+
+            # настраиваем-запускаем
             self.datareader.setChanN(chanN)
             self.datareader.readFile(self.filePathLineEdit.text())
 
 
+            #  пусто
             if not len(self.datareader.data):
                 return 
 
             self.plotwidget.show()
+
+
+            # берем данные
             data = self.datareader.data[0]
 
 
-
+            # удаляем лишние данные
             data.rem(int(self.cntSpinBox.text()))
 
+
+            # выбираем нужный вид графика и строим
             if self.oscModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotOsc(data.X, data.A, 0)
 
@@ -242,11 +337,14 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.specModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotSpec(data.A, 0)
 
+    # очистка лога
     def clearLogPushButtonClicked(self):
         self.logTextEdit.setText('')
 
+    # подключение кнопок к обработчикам
     def connectSignals(self):
         self.startPushButton.clicked.connect(self.startPushButtonClicked)
         self.clearLogPushButton.clicked.connect(self.clearLogPushButtonClicked)
         self.stopPushButton.clicked.connect(self.stopPushButtonClicked)
         self.selectFilePushButton.clicked.connect(self.selectFilePushButtonClicked)
+        self.windHelpPushButton.clicked.connect(self.windHelpPushButtonClicked)

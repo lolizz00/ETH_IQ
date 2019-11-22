@@ -36,8 +36,9 @@ int min[PORT_N] = { 0 };
 int max[PORT_N] = { 0 };
 
 
-//#define OFFS 2
-
+/*
+	Проверка, что все позиции идут подряд
+*/
 int verPos()
 {
 	int ret = 1;
@@ -64,6 +65,10 @@ int verPos()
 	return ret;
 }
 
+
+/*
+	Запись принятых данных в файл
+*/
 void writeFile(int n, uint8_t** buff)
 {
 	FILE *fp;
@@ -98,6 +103,9 @@ void writeFile(int n, uint8_t** buff)
 	fclose(fp);
 }
 
+/*
+	Запись всех данных со всех каналов в файл
+*/
 void save()
 {
 	for (int i = 0; i < PORT_N; i++)
@@ -107,6 +115,10 @@ void save()
 
 }
 
+
+/*
+	Вспомогалка, минимум в массиве
+*/
 int calcMinArr(int* arr, int n)
 {
 	int res = INT32_MAX;
@@ -122,6 +134,10 @@ int calcMinArr(int* arr, int n)
 	return res;
 }
 
+
+/*
+	Вспомогалка, максимум в массиве
+*/
 int calcMaxArr(int* arr, int n)
 {
 	int res = 0;
@@ -138,6 +154,10 @@ int calcMaxArr(int* arr, int n)
 	return res;
 }
 
+
+/*
+	Поиск минимального номера пакета
+*/
 void calcMin()
 {
 
@@ -147,6 +167,9 @@ void calcMin()
 	}
 }
 
+/*
+	Поиск максимального номера пакета
+*/
 void calcMax()
 {
 	for (int i = 0; i < PORT_N; i++)
@@ -155,36 +178,55 @@ void calcMax()
 	}
 }
 
+
+/*
+	Считаем в зависимости от начального и конечного номера пакета, что надо срезать сверху и снизу
+*/
 void calcOffs()
 {
 	calcMin();
 	calcMax();
 
 
-	int max_arr_min = calcMinArr(max, PORT_N);
+	int max_arr_min = calcMinArr(max, PORT_N); /* Находим общее начало и общий конец пакетов */
 	int min_arr_max = calcMaxArr(min, PORT_N);
 
 	for (int i = 0; i < PORT_N; i++)
 	{
-		down_offs[i] = min_arr_max - min[i];
+		down_offs[i] = min_arr_max - min[i]; /* Сохраняем, сколько надо съесть, что бы все пакеты на всех каналах были одинаковы */
 		up_offs[i] = max[i] - max_arr_min;
 	}
 
 }
 
+
+/*
+	Читаем данные
+*/
 void process(UDPSocket* Socket, uint8_t** buff)
-{
+{	
+
+	/*
+		Первые пакеты, которые пришли никогда не идут подряд
+		Это и фиксим
+	*/
 	for (int i = 0; i < POS_OFFS; i++)
 	{
 		int cnt = 0;
 		Socket->RecvFrom(buff[i], BUFSIZE, &cnt);
 	}
 
+	/*
+		А теперь читаем нормально
+	*/
 	for (int i = 0; i < POS_N; i++)
 	{
 		int cnt = 0;
 		Socket->RecvFrom(buff[i], BUFSIZE, &cnt);
 
+		/*
+			Не приняли байтов - ничего нет
+		*/
 		if (cnt < 0)
 		{
 			TOUT_FLG = 1;
@@ -206,6 +248,9 @@ void process(UDPSocket* Socket, uint8_t** buff)
 
 }
 
+/*
+	Создание буфферов, в которые читаем данные из сокетов и которые пишем в файл
+*/
 uint8_t** createBuff()
 {
 	uint8_t** res = NULL;
@@ -221,6 +266,10 @@ uint8_t** createBuff()
 	return res;
 }
 
+
+/*
+	Чистим память буферов
+*/
 void destBuff(uint8_t** buff)
 {
 	for (int i = 0; i < POS_N; i++)
@@ -231,6 +280,11 @@ void destBuff(uint8_t** buff)
 	free(buff);
 }
 
+/*
+	Инициализация всего
+	Очищаем буфферы
+	Очищаем и по новой создает сокеты, включая их
+*/
 void init()
 {
 	buffs.clear();
@@ -245,6 +299,12 @@ void init()
 	}
 }
 
+
+/*
+	Очистка всего
+	Буферы освобождаем
+	Чистим сокеты
+*/
 void dest()
 {
 	for (int i = 0; i < PORT_N; i++)
@@ -254,17 +314,20 @@ void dest()
 	}
 }
 
+/*
+	Запуск процесса чтения
+*/
 void run()
 {
-	threads.clear();
+	threads.clear(); // очищаем потоки
 
-	for (int i = 0; i < PORT_N; i++)
+	for (int i = 0; i < PORT_N; i++) // создаем новые и запускаем
 	{
 		thread thr(process, &sockets[i], buffs[i]);
 		threads.emplace_back(std::move(thr));
 	}
 
-	for (int i = 0; i < PORT_N; i++)
+	for (int i = 0; i < PORT_N; i++) // ждем все потоки
 	{
 		threads[i].join();
 	}
@@ -272,6 +335,9 @@ void run()
 
 }
 
+/*
+	Если очень хочется, можно вывести номера пакетов
+*/
 void print()
 {
 
@@ -289,6 +355,10 @@ void print()
 
 #ifdef _DEBUG
 
+
+/*
+	В дебаге запускаем как exe-шник
+*/
 int main()
 {
 
@@ -334,8 +404,13 @@ DLLEXPORT int READER_read(int n, char* _ADDR)
 
 	cout << "ADDR: " << ADDR << endl;
 
+
+	/* Сколько посылок читаем */
 	POS_N_WRITE = n;
 
+	/*
+		Нельзя меньше минимума 
+	*/
 	if (n < 70)
 	{
 		n = 70;
@@ -344,6 +419,9 @@ DLLEXPORT int READER_read(int n, char* _ADDR)
 	
 	POS_N = n;
 
+	/*
+		Инциализируем
+	*/
 	init();
 
 	int sch = 0;
@@ -354,8 +432,10 @@ DLLEXPORT int READER_read(int n, char* _ADDR)
 		cout << "Try to read..." << endl;
 		sch++;
 
-		run();
+		run(); /* Пробуем считать */
 
+
+		/* Считать не удалось - увы, пока */
 		if (TOUT_FLG)
 		{
 			dest();
@@ -363,6 +443,7 @@ DLLEXPORT int READER_read(int n, char* _ADDR)
 			return -1;
 		}
 
+		/* Проверяем, что пакеты идут подряд */
 		if (verPos())
 		{
 			cout << "Ver --- OK" << endl;
@@ -370,14 +451,19 @@ DLLEXPORT int READER_read(int n, char* _ADDR)
 		}
 		else
 		{
-			cout << "Verr --- ERR" << endl;
+			cout << "Verr --- ERR" << endl; /* Пробуем еще раз */
 		}
 
 	} while (1);
 
 
+	/* Срезаем лишние */
 	calcOffs();
+
+	/* Сохраняем в файл  */
 	save();
+
+	/* Чистим все */
 	dest();
 
 	cout << "Finished!" << endl;

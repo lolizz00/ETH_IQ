@@ -4,6 +4,12 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 
+/*
+	Для скорости написания это было сразу сделано в h файле
+	Никакого криминала
+	Часть чисто библиотечная
+*/
+
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <system_error>

@@ -9,7 +9,7 @@ import sys
 from MainWindow import MW
 from PyQt5 import QtWidgets
 
-#  1622
+
 
 # --- Нормальный вывод ошибок
 def log_uncaught_exceptions(ex_cls, ex, tb):
@@ -30,29 +30,10 @@ def start():
     app = QtWidgets.QApplication(sys.argv)
     mv = MW()
 
-    mv.showMinimized()
-    #mv.show()
+    mv.show()
 
     sys.exit(app.exec_())
 
 
-def _start():
-    datareader = DataReader()
-    datareader.setChanN(2)
-
-    chans = [0]
-
-    datareader.initReader(chans, 10000)
-    datareader.start()
-
-    sch = 0
-    for data in datareader.data:
-        print('Строим график №' + str(sch))
-        plotSpec(data.A)
-        plotOsc(data.X, data.A)
-        sch = sch + 1
-
-
-    plt.show()
 if __name__ == '__main__':
     start()
