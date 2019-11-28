@@ -12,9 +12,6 @@ from PyQt5.QtWidgets import QSystemTrayIcon
 from PlotWidget import PlotWidget
 
 import numpy as np
-
-from helpspec import Ui_Form as helpSpecUI
-
 class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
@@ -158,8 +155,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
             if self.oscModeRadioButton.isChecked():
                 lst['mode'] = 'osc'
-            elif self.iqModeRadioButton.isChecked():
-                lst['mode'] = 'iq'
             elif self.specModeRadioButton.isChecked():
                 lst['mode'] = 'spec'
             elif self.snrModeRadioButton.isChecked():
@@ -294,9 +289,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
             if self.oscModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotOsc(data.X, data.A, n)
-
-            if self.iqModeRadioButton.isChecked():
-                self.plotwidget.plotter.plotIQ(data.X, data.I, data.Q, n)
 
             if self.specModeRadioButton.isChecked():
                 self.plotwidget.plotter.plotSpec(data.A, n)

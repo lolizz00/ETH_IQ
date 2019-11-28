@@ -55,41 +55,31 @@ class IQ:
         X = np.insert(X, ind, 0)
         return X
 
-    def butter_lowpass(self, cutoff, fs, order=5):
-        nyq = 0.5 * fs
-        normal_cutoff = cutoff / nyq
-        b, a = butter(order, normal_cutoff, btype='low', analog=False)
-        return b, a
 
-    def butter_lowpass_filter(self, data, cutoff, fs, order=5):
-        b, a = self.butter_lowpass(cutoff, fs, order=order)
-        y = lfilter(b, a, data)
-        return y
+    def LPF(self, X, fs):
+        w = (fs / 2) / (fs)
+        b, a = signal.butter(5, w, 'low')
+        X = signal.filtfilt(b, a, X)
+        return X
 
-    # генерация амплитуды
+
+        # генерация амплитуды
     def generateA(self, Fs):
 
         I = self.I
         Q = self.Q
-
-        #Fs = 5e3
 
 
         IQ = I + 1j* Q
 
         IQ = self.upsample(IQ)
 
-
-
         IQ = IQ * np.exp(1j * 2 * np.pi * Fs / 4)
 
         IQ = np.real(IQ)
 
+        # срезаем после 2500 для осцилограммы
+        IQ = self.LPF(IQ, Fs)
 
         self.A = IQ
-
-
-        pass
-        #self.A = np.add(self.I, self.Q)
-        #self.A = self.A
 

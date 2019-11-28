@@ -72,130 +72,6 @@ class Plotter(QtWidgets.QWidget):
         self.setLayout(layout)
         self.figure.canvas.draw()
 
-    def plus(self):
-        if self.mode == 'osc' or self.mode == 'iq':
-
-            if self.YLIM_max < self.XLIM_min:
-                return
-
-            self.YLIM_min = self.YLIM_min + self.K_Y
-            self.YLIM_max = self.YLIM_max - self.K_Y
-
-
-
-            if self.mode == 'iq':
-                self.oscPlotQ.set_ylim(self.YLIM_min, self.YLIM_max)
-                self.oscPlotI.set_ylim(self.YLIM_min, self.YLIM_max)
-            else:
-                plt.ylim(self.YLIM_min, self.YLIM_max)
-
-            self.figure.canvas.draw()
-
-    def minus(self):
-        if self.mode == 'osc' or self.mode == 'iq':
-            self.YLIM_min = self.YLIM_min - self.K_Y
-            self.YLIM_max = self.YLIM_max + self.K_Y
-
-            if self.mode == 'iq':
-                self.oscPlotQ.set_ylim(self.YLIM_min, self.YLIM_max)
-                self.oscPlotI.set_ylim(self.YLIM_min, self.YLIM_max)
-            else:
-                plt.ylim(self.YLIM_min, self.YLIM_max)
-
-
-            self.figure.canvas.draw()
-
-    def moveLeft(self):
-        if self.mode == 'osc' or self.mode == 'iq':
-            self.XLIM_min = self.XLIM_min - self.K_X
-            self.XLIM_max = self.XLIM_max - self.K_X
-
-            if self.mode == 'iq':
-                passs
-                self.oscPlotQ.set_xlim(self.XLIM_min, self.XLIM_max)
-                self.oscPlotI.set_xlim(self.XLIM_min, self.XLIM_max)
-            else:
-                plt.xlim(self.XLIM_min, self.XLIM_max)
-
-            self.figure.canvas.draw()
-
-    def moveRight(self):
-        if self.mode == 'osc' or self.mode == 'iq':
-            self.XLIM_min = self.XLIM_min + self.K_X
-            self.XLIM_max = self.XLIM_max + self.K_X
-
-            if self.mode == 'iq':
-                self.oscPlotQ.set_xlim(self.XLIM_min, self.XLIM_max)
-                self.oscPlotI.set_xlim(self.XLIM_min, self.XLIM_max)
-            else:
-                plt.xlim(self.XLIM_min, self.XLIM_max)
-
-            self.figure.canvas.draw()
-
-    # отстройка отдельно I и Q
-    def plotIQ(self, X, I, Q, n):
-
-
-        # --- I
-        leg = 'Канал #' + str(n) + ' - осцилограмма I'
-
-        if self.showSample: # если отображаем точки, s - рамер точки
-            self.oscPlotI.scatter(X, I, s=10, label='Канал #' + str(n) + ' - сeмплы I')
-
-        if self.showSpline: # если отображаем графки
-            # магия построения графиков из scipy
-            xnew = np.linspace(X.min(), X.max(), len(X) * 10)
-            spl = make_interp_spline(X, I, k=3)
-            power_smooth = spl(xnew)
-            self.oscPlotI.plot(xnew, power_smooth, label='Канал #' + str(n) + ' - график I')
-
-
-        # легенда справа сверху
-        self.oscPlotI.legend(loc='upper right')
-        self.oscPlotI.grid(True)
-
-
-        # масштабируем
-        tmp = I.max()
-        if tmp > self.maxOscValI:
-            self.maxOscValI = tmp
-
-        self.YLIM_min = -self.maxOscValI - self.K_Y
-        self.YLIM_max = self.maxOscValI + self.K_Y
-
-        self.oscPlotI.set_xlim(0, self.oscSize)
-
-        self.figure.canvas.draw()
-
-        # --- Q
-        if self.showSample: # отображаем точки, s - размер точки
-            self.oscPlotQ.scatter(X, Q, s=10, label='Канал #' + str(n) + ' - сeмплы Q')
-
-        if self.showSpline: # график
-            # магия scipy
-            xnew = np.linspace(X.min(), X.max(), len(X) * 10)
-            spl = make_interp_spline(X, Q, k=3)
-            power_smooth = spl(xnew)
-            self.oscPlotQ.plot(xnew, power_smooth, label='Канал #' + str(n) + ' - график Q')
-
-
-        self.oscPlotQ.legend(loc='upper right')
-        self.oscPlotQ.grid(True)
-        plt.grid(True)
-
-        tmp = Q.max()
-        if tmp > self.maxOscValQ:
-            self.maxOscValQ = tmp
-
-        #self.oscPlotQ.set_ylim(-self.maxOscValQ - self.K_Y, self.maxOscValQ + self.K_Y)
-
-        self.YLIM_min = -self.maxOscValQ - self.K_Y
-        self.YLIM_max = self.maxOscValQ + self.K_Y
-
-        self.oscPlotQ.set_xlim(0, self.oscSize)
-
-        self.figure.canvas.draw()
-
     def plotOsc(self, X, Y, n):
 
         if self.mode != 'osc':
@@ -259,11 +135,10 @@ class Plotter(QtWidgets.QWidget):
             ref = 32769
             s_dbfs = 20 * np.log10(s_mag / ref)
 
-            # фильтер, гы
-            for i in range(int(len(s_dbfs) /2 ), len(s_dbfs)):
-                if s_dbfs[i] > -60:
-                    pass
-                    s_dbfs[i] = s_dbfs[i-1]
+            # отображаем только часть спектра
+            s_dbfs = s_dbfs[:int(len(s_dbfs) / 2)]
+            freq = freq[:int(len(freq) /2)]
+
 
             self.specPlot.plot(freq, s_dbfs, label='Считывание #' + str(sch), alpha=.5)
 
@@ -321,15 +196,6 @@ class Plotter(QtWidgets.QWidget):
     # отстройка спектограмы
     def plotSpec(self, X, n):
 
-
-
-        #X = 20 * self.safe_ln(np.abs(X) / 32768)
-
-        #self.specPlot.magnitude_spectrum(X, Fs=2 * self.fs, scale='dB', window=win, label='Канал #' + str(n), alpha=.5)
-        #self.specPlot.magnitude_spectrum(X, Fs=2 * self.fs,  window=win, label='Канал #' + str(n), alpha=.5)
-
-
-
         N = len(X)
         win = np.hamming(N)
         fs = self.fs * 2
@@ -340,33 +206,11 @@ class Plotter(QtWidgets.QWidget):
         ref = 32769
         s_dbfs = 20 * np.log10(s_mag / ref)
 
-        # фильтер, гы
-        for i in range(int(len(s_dbfs) / 2), len(s_dbfs)):
-            if s_dbfs[i] > -60:
-                pass
-                s_dbfs[i] = s_dbfs[i - 1]
+        # отображаем только часть спектра
+        s_dbfs = s_dbfs[:int(len(s_dbfs) / 2)]
+        freq = freq[:int(len(freq) / 2)]
 
         self.specPlot.plot(freq, s_dbfs,label='Канал #' + str(n), alpha=.5)
-
-        #plt.plot(s_dbfs)
-
-        #N = 10
-        #point_sig = [np.argmax(s_dbfs), np.max(s_dbfs)]
-        #point_noise = [point_sig[0] + N, s_dbfs[point_sig[0] + N]]
-
-        #plt.scatter(point_sig[0], point_sig[1],  color='black', marker='x')
-
-
-        #plt.scatter(point_noise[0], point_noise[1], color='black', marker='x')
-
-       # print(sig_level)
-       # print(noise_level)
-
-        #s_dbfs = self.moving_average(s_dbfs, 5)
-        #plt.plot(s_dbfs, color='red')
-
-
-
 
 
         # легенда
