@@ -99,7 +99,7 @@ class DataReader(QObject):
         self.data.append(self.th[0].data)
 
     # инициализация перед запуском
-    def initReader(self, chans, point_cnt=50,addr=""):
+    def initReader(self, fs, chans, point_cnt=50, addr=""):
         self.THREAD_N = chans # для каждого канала свой поток
         self.POS_N = point_cnt
 
@@ -122,6 +122,7 @@ class DataReader(QObject):
             self.th.append(DataReaderMin(n))
             self.th[sch].setFile(name) # имя файла
             self.th[sch].setChanN(self.CHAN_N)  # I+Q или I
+            self.th[sch].setFs(fs)
             sch = sch + 1
 
         #self.log('Инициализация успешна')
@@ -178,6 +179,9 @@ class DataReaderMin(Thread):
         self.chanN = 1
 
 
+    def setFs(self, Fs):
+        self.fs = Fs
+
     # считаем, один каанал или несколько
     def setChanN(self, n):
         self.chanN = n
@@ -213,7 +217,7 @@ class DataReaderMin(Thread):
 
         self.log('Байты разбиты')
 
-        self.data.generateA()  # считаем амплитуду в зависимости от I+Q или I
+        self.data.generateA(self.fs)  # считаем амплитуду в зависимости от I+Q или I
         self.data.genreateX() # создаем отсчеты для абсциссы - целые числа с 0 до длинны
         self.log('Остановка')
 
@@ -224,6 +228,7 @@ class DataReaderMin(Thread):
         try:
             self.procces()
         except:
+            raise
             self.ERR_FLG = True
 
 

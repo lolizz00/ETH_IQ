@@ -18,12 +18,6 @@ from helpspec import Ui_Form as helpSpecUI
 class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
-    def windHelpPushButtonClicked(self):
-
-        self.helpui =  helpSpecUI()
-        self.wid = QWidget()
-        self.helpui.setupUi(self.wid)
-        self.wid.show()
 
     # выбор файла для остройки из него
     def selectFilePushButtonClicked(self):
@@ -127,24 +121,30 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
     def updateReaderParams(self):
         try:
 
-            if not self.specModeRadioButton.isChecked():
+
+            if self.snrModeRadioButton.isChecked():
+                channels = [int(self.SNR_chanComboBox.currentText()) -1 ]
+            elif not self.specModeRadioButton.isChecked():
                 channels = self._switchCnannels()
                 if not len(channels):
                     raise
             else:
                 channels = self.switchChannelsSpec()
 
-                if not len(channels):
-                    raise
+
+            if not len(channels):
+                raise
 
             pointCnt = self.pointCntSpinBox.value()
 
             chanN = int(self.chanComboBox.currentText())
 
+            fs = int(self.SNR_fsLineEdit.text())
+
             # ---
 
             self.datareader.setChanN(chanN)
-            self.datareader.initReader(channels, pointCnt, self.addrLineEdit.text())
+            self.datareader.initReader(fs, channels, pointCnt, self.addrLineEdit.text())
 
         except:
             self.showErr('Неверные параметры!')
@@ -162,25 +162,20 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
                 lst['mode'] = 'iq'
             elif self.specModeRadioButton.isChecked():
                 lst['mode'] = 'spec'
+            elif self.snrModeRadioButton.isChecked():
+                lst['mode'] = 'snr'
 
 
             lst['showSample'] = self.showSampleCheckBox.isChecked()
             lst['showSpline'] = self.showSplineCheckBox.isChecked()
-            lst['fftWin'] = self.fftWinComboBox.currentText()
-
-
-            txt = self.fftKLineEdit.text()
-            try:
-                lst['k'] = float(txt)
-            except:
-                lst['k'] = None
 
 
 
+            lst['fs'] = int(self.SNR_fsLineEdit.text())
 
 
-            lst['fs'] = int(self.fsLineEdit.text())
 
+            lst['offs'] = int(self.SNR_offsetLineEdit.text())
 
             self.plotwidget.plotter.setParams(lst)
 
@@ -233,9 +228,41 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.logTextEdit.setText(old_text + '\n' + msg) # дополняем
 
+    # остройка SNR
+    def startSNR(self):
+        if not self.updatePlotParams():
+            return
+
+        self.showMessageTray('Обновляем графики...')
+
+
+
+
+        data = []
+        n = int(self.SNR_cntLineEdit.text())
+        for i in range(n):
+            self.updateReaderParams()
+            self.datareader.run()
+            _data = self.datareader.data[0]
+            _data.rem(int(self.cntSpinBox.text()))
+            _data = _data.A
+            data.append(_data)
+
+
+
+
+
+
+        self.plotwidget.plotter.specWithSNR(data)
+        self.plotwidget.show()
 
     # запуск считыания
     def start(self):
+
+        # обрабатываем особоым способом
+        if self.snrModeRadioButton.isChecked():
+            self.startSNR()
+            return
 
         if not self.updatePlotParams():
             return
@@ -347,4 +374,3 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.clearLogPushButton.clicked.connect(self.clearLogPushButtonClicked)
         self.stopPushButton.clicked.connect(self.stopPushButtonClicked)
         self.selectFilePushButton.clicked.connect(self.selectFilePushButtonClicked)
-        self.windHelpPushButton.clicked.connect(self.windHelpPushButtonClicked)

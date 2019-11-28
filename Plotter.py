@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
+
+import math
 # остройка графиков
 
 
@@ -57,7 +59,6 @@ class Plotter(QtWidgets.QWidget):
         self.oscPlotQ = None
         self.specPlot = None
 
-
     # для matplolib, разметка и тд
     def initFigure(self):
         self.figure = plt.figure()
@@ -79,6 +80,7 @@ class Plotter(QtWidgets.QWidget):
 
             self.YLIM_min = self.YLIM_min + self.K_Y
             self.YLIM_max = self.YLIM_max - self.K_Y
+
 
 
             if self.mode == 'iq':
@@ -229,26 +231,147 @@ class Plotter(QtWidgets.QWidget):
 
         self.figure.canvas.draw()
 
+    def safe_ln(self, x, minval=0.0000000001):
+        return np.log10(x.clip(min=minval))
+
+    def moving_average(self, a, n=3):
+        ret = np.cumsum(a, dtype=float)
+        ret[n:] = ret[n:] - ret[:-n]
+        return ret[n - 1:] / n
+
+    # остройка спектограммы
+    def specWithSNR(self, Xarr):
+
+        sch = 0
+
+        sig_max = []
+        noise = []
+
+        for X in Xarr:
+            sch = sch + 1
+            N = len(X)
+            win = np.hamming(N)
+            fs = self.fs * 2
+            sp = np.fft.rfft(X)
+            freq = np.arange((N / 2) + 1) / (float(N) / fs)
+            s_mag = np.abs(sp) * 2 / np.sum(win)
+
+            ref = 32769
+            s_dbfs = 20 * np.log10(s_mag / ref)
+
+            # фильтер, гы
+            for i in range(int(len(s_dbfs) /2 ), len(s_dbfs)):
+                if s_dbfs[i] > -60:
+                    pass
+                    s_dbfs[i] = s_dbfs[i-1]
+
+            self.specPlot.plot(freq, s_dbfs, label='Считывание #' + str(sch), alpha=.5)
+
+            # ищем сигнал
+            sig_max_y = np.max(s_dbfs)
+            sig_max_x = freq[np.argmax(s_dbfs)]
+            sig_max.append(sig_max_y)
+
+            # ищем шум
+            noise_x = sig_max_x + self.offs # нашли частоту
+
+            noise_x = np.abs(freq - noise_x)
+            noise_x = np.argmin(noise_x) # нашли индекс частоты, которая ближе всего к нужной частоте
+
+            noise_y = s_dbfs[noise_x]
+            noise_x = freq[noise_x]
+
+            noise.append(noise_y)
+
+            # легенду пишем только один раз
+            marker_size = 50
+            if sch == 1:
+                self.specPlot.scatter([sig_max_x], [sig_max_y], label='Пик сигнала', marker='x', color='black',s=marker_size)
+                self.specPlot.scatter([noise_x], [noise_y], label='Шум по смещению', marker='+', color='black',s=marker_size)
+            else:
+                self.specPlot.scatter([sig_max_x], [sig_max_y], marker='x', color='black', s=marker_size)
+                self.specPlot.scatter([noise_x], [noise_y], marker='+', color='black', s=marker_size)
+
+        sig_mid  = np.sum(sig_max) / len(sig_max)
+        sig_mid = math.floor(sig_mid)
+        noise_mid = np.sum(noise) / len(noise)
+        noise_mid = math.floor(noise_mid)
+
+        txt = 'Серднее значение сигнала: ' + str(sig_mid) + ' dBFS\n'
+        txt = txt + 'Серднее значение шума: ' + str(noise_mid) + ' dBFS\n'
+        txt = txt + 'SNR = ' + str(sig_mid - noise_mid) + ' dB'
+
+
+        box = {'facecolor' : 'white', 'edgecolor' : 'red', 'boxstyle' : 'square'}
+
+        plt.text(0.5, 0.5, txt,
+             horizontalalignment='center',
+             verticalalignment='center',
+                 bbox=box)
+
+
+
+
+        plt.xlabel('Частота, Hz')
+        plt.ylabel('Сигнал, dBFS')
+        plt.legend(loc='upper right')
+        plt.grid(True)
+        self.figure.canvas.draw()
+
     # отстройка спектограмы
     def plotSpec(self, X, n):
 
-        try:
-            if self.fftWin in self.windows_need_k: # если окно требует коэф.
 
-                if self.k == None:
-                    raise
-                win = signal.get_window((self.fftWin, self.k), len(X)) # вызываем с коэф.
-            else:
-                win = signal.get_window(self.fftWin, len(X))
-        except:
-            self.log('Недопустимые параметры оконной функции!')
-            return
 
-        # строим
-        self.specPlot.magnitude_spectrum(X, Fs=2 * np.pi * self.fs, scale='dB', window=win, label='Канал #' + str(n), alpha=.5)
+        #X = 20 * self.safe_ln(np.abs(X) / 32768)
+
+        #self.specPlot.magnitude_spectrum(X, Fs=2 * self.fs, scale='dB', window=win, label='Канал #' + str(n), alpha=.5)
+        #self.specPlot.magnitude_spectrum(X, Fs=2 * self.fs,  window=win, label='Канал #' + str(n), alpha=.5)
+
+
+
+        N = len(X)
+        win = np.hamming(N)
+        fs = self.fs * 2
+        sp = np.fft.rfft(X)
+        freq = np.arange((N / 2) + 1) / (float(N) / fs)
+        s_mag = np.abs(sp) * 2 / np.sum(win)
+
+        ref = 32769
+        s_dbfs = 20 * np.log10(s_mag / ref)
+
+        # фильтер, гы
+        for i in range(int(len(s_dbfs) / 2), len(s_dbfs)):
+            if s_dbfs[i] > -60:
+                pass
+                s_dbfs[i] = s_dbfs[i - 1]
+
+        self.specPlot.plot(freq, s_dbfs,label='Канал #' + str(n), alpha=.5)
+
+        #plt.plot(s_dbfs)
+
+        #N = 10
+        #point_sig = [np.argmax(s_dbfs), np.max(s_dbfs)]
+        #point_noise = [point_sig[0] + N, s_dbfs[point_sig[0] + N]]
+
+        #plt.scatter(point_sig[0], point_sig[1],  color='black', marker='x')
+
+
+        #plt.scatter(point_noise[0], point_noise[1], color='black', marker='x')
+
+       # print(sig_level)
+       # print(noise_level)
+
+        #s_dbfs = self.moving_average(s_dbfs, 5)
+        #plt.plot(s_dbfs, color='red')
+
+
+
 
 
         # легенда
+        plt.xlabel('Частота')
+        plt.ylabel('dBFS')
         plt.legend(loc='upper right')
         plt.grid(True)
 
@@ -259,10 +382,8 @@ class Plotter(QtWidgets.QWidget):
         self.mode = lst['mode']
         self.showSample = lst['showSample']
         self.showSpline = lst['showSpline']
-        self.fftWin = lst['fftWin']
-        self.k = lst['k']
         self.fs = lst['fs']
-
+        self.offs = lst['offs']
 
         maxOscVal = 0
 
@@ -287,7 +408,6 @@ class Plotter(QtWidgets.QWidget):
             self.specPlot = None
         self.figure.canvas.draw()
 
-
     # смена режима графиков
     def switchMode(self):
 
@@ -300,8 +420,10 @@ class Plotter(QtWidgets.QWidget):
             self.oscPlotI, self.oscPlotQ =  self.figure.subplots(2)
             self.oscPlotI.set_title('Осцилограмма I')
             self.oscPlotQ.set_title('Осцилограмма Q')
-        elif self.mode == 'spec':
+        elif self.mode == 'spec' or self.mode == 'snr':
             self.specPlot = self.figure.subplots(1)
             self.specPlot.set_title('Спектограмма')
+
+
 
         self.figure.canvas.draw()
