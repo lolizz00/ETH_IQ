@@ -269,7 +269,8 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.updateReaderParams()
 
         # пускаем
-        self.datareader.run()
+        while not self.datareader.run():
+            pass
 
         # если только считать файлы
         if self.onlySaveCheckBox.isChecked():

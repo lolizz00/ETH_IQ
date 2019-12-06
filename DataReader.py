@@ -164,6 +164,12 @@ class DataReader(QObject):
         for th in self.th:
             self.data.append(th.data)
 
+        for th in self.th:
+            if th.ERR_FLG:
+                return  False
+
+        return True
+
         self.log('Успешно!')
 
 class DataReaderMin(Thread):
@@ -228,7 +234,6 @@ class DataReaderMin(Thread):
         try:
             self.procces()
         except:
-            raise
             self.ERR_FLG = True
 
 
