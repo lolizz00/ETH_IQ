@@ -95,6 +95,11 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             channels = self._switchCnannels()
 
 
+            if self.specModeRadioButton.isChecked() and self.SNR_checkBox.isChecked():
+                n = int(self.SNR_chanComboBox.currentText()) - 1
+                if not n in channels:
+                    channels.append(n)
+
             if not len(channels):
                 raise
 
@@ -252,9 +257,28 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.onlySaveCheckBox.isChecked():
             return
 
+        #  ---- костыль для усреднения. Выравниваем амплитуду и выравниваем между собой
         for chan in data:
             for i in range(len(data[chan])):
-                data[chan][i].rem(int(self.cntSpinBox.text()))
+                data[chan][i].remA(int(self.cntSpinBox.text()))
+
+        min = 999999
+        for chan in data:
+            for i in range(len(data[chan])):
+                ln = len(data[chan][i].A)
+                if(ln) < min:
+                    min = ln
+
+
+        for chan in data:
+            for i in range(len(data[chan])):
+                pass
+                data[chan][i].remA(min)
+
+        # ----
+
+
+                #data[chan][i].rem(int(self.cntSpinBox.text()))
 
         # ображаем графиики
         self.plotwidget.show()

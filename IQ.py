@@ -29,14 +29,21 @@ class IQ:
             self.Q = np.append(self.Q, _Q)
 
 
+    def remA(self, lim):
+        if lim > len(self.A):
+            return
+
+        self.A = self.A[:lim]
+        self.X = self.X[:lim]
+
     # удаление 'лишних' данные для возвращения в лимит
     def rem(self, lim):
+
+        return
 
         if lim > len(self.I):
             return
 
-
-        self.A = self.A[:lim]
         self.X = self.X[:lim]
         self.I = self.I[:lim]
 

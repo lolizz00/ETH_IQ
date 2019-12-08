@@ -89,7 +89,7 @@ class Ui_MainWindow(object):
         self.onlySaveCheckBox.setObjectName("onlySaveCheckBox")
         self.modeToolBox.addItem(self.realPage, "")
         self.filePage = QtWidgets.QWidget()
-        self.filePage.setGeometry(QtCore.QRect(0, 0, 311, 127))
+        self.filePage.setGeometry(QtCore.QRect(0, 0, 100, 30))
         self.filePage.setObjectName("filePage")
         self.layoutWidget2 = QtWidgets.QWidget(self.filePage)
         self.layoutWidget2.setGeometry(QtCore.QRect(20, 30, 254, 27))
@@ -326,9 +326,6 @@ class Ui_MainWindow(object):
         self.chanCheckBox.setObjectName("chanCheckBox")
         self.horizontalLayout_4.addWidget(self.chanCheckBox)
         self.verticalLayout_3.addLayout(self.horizontalLayout_4)
-        self.label_5 = QtWidgets.QLabel(self.groupBox_3)
-        self.label_5.setGeometry(QtCore.QRect(40, 330, 381, 51))
-        self.label_5.setObjectName("label_5")
         self.gridLayout.addWidget(self.groupBox_3, 0, 1, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -404,6 +401,5 @@ class Ui_MainWindow(object):
         self.showSampleCheckBox.setText(_translate("MainWindow", "Отображать точки"))
         self.showSplineCheckBox.setText(_translate("MainWindow", "Отображать график"))
         self.chanCheckBox.setText(_translate("MainWindow", "Вещественный"))
-        self.label_5.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-style:italic;\">Предупреждение!</span></p><p><span style=\" font-style:italic;\">Усреднение лучше использовать при количестве точек не более 10000!</span></p></body></html>"))
 
 
