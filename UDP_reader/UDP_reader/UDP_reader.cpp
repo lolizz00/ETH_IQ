@@ -82,13 +82,13 @@ void writeFile(int n, uint8_t** buff)
 	int sh = 0;
 
 
-	cout << "-----" << endl;
-	cout << "N chan: " << n << endl;
+	//cout << "-----" << endl;
+	//cout << "N chan: " << n << endl;
 
 	int sch = 0;
 
 
-	cout << "Down offs: " << down_offs[n] << "\tUp offs:" << up_offs[n] << endl;
+	//cout << "Down offs: " << down_offs[n] << "\tUp offs:" << up_offs[n] << endl;
 	for(int i = down_offs[n]; i < POS_N_WRITE - up_offs[n];i++)
 	{
 		sh++;
@@ -97,7 +97,7 @@ void writeFile(int n, uint8_t** buff)
 		i = i + 1;
 	}
 
-	cout << "Data len: " << sh << endl;
+	//cout << "Data len: " << sh << endl;
 
 
 	fclose(fp);

@@ -27,7 +27,7 @@ class DataReader(QObject):
     REALTIME_FLG = True
 
     # запись в лог в GUI
-    log_signal =  pyqtSignal(str)
+    log_signal = pyqtSignal(str)
 
 
     # перевод количетсва точек в количество посылок
@@ -52,12 +52,16 @@ class DataReader(QObject):
         self.CHAN_N = 0
         self.data = []
         self.th = []
+
+    def initDLL(self):
         self.initDLL()
+
 
     # запись в лог
     def log(self, msg):
-        msg = 'Datareader :: ' + msg
+        msg = 'Datareader: ' + msg
         self.log_signal.emit(msg)
+        print(msg)
 
     # загрузка библиотеки
     def initDLL(self):
@@ -89,14 +93,17 @@ class DataReader(QObject):
         self.th.append(DataReaderMin(0))
         self.th[0].setFile(name)
         self.th[0].setChanN(self.CHAN_N)
+        self.th[0].setFs(self.fs)
         self.th[0].start()
         self.th[0].join()
 
         if self.th[0].ERR_FLG:
             self.log('Неверный файл!')
-            return
+            return False
 
         self.data.append(self.th[0].data)
+
+        return  True
 
     # инициализация перед запуском
     def initReader(self, fs, chans, point_cnt=50, addr=""):
@@ -123,6 +130,7 @@ class DataReader(QObject):
             self.th[sch].setFile(name) # имя файла
             self.th[sch].setChanN(self.CHAN_N)  # I+Q или I
             self.th[sch].setFs(fs)
+            self.th[sch].setChanNumber(n)
             sch = sch + 1
 
         #self.log('Инициализация успешна')
@@ -132,7 +140,7 @@ class DataReader(QObject):
 
         #self.log('Запуск...')
 
-        self.data = []
+        self.data = {}
 
         t0 = time.time()
 
@@ -153,19 +161,24 @@ class DataReader(QObject):
 
 
         # запускаем потоки для каждого канала
+        self.log('Запускаем потоки...')
         for th in self.th:
             th.start()
 
+        self.log('Ждем окончание работы потоков...')
         # ждем окончания работы всех потоков
         for th in self.th:
             th.join()
 
+        self.log('Собираем данные...')
         # соеднияем данные
         for th in self.th:
-            self.data.append(th.data)
+            n = th.getChanNumber()
+            self.data[n] = th.data
 
         for th in self.th:
             if th.ERR_FLG:
+                self.log('Ошибка!')
                 return  False
 
         return True
@@ -184,6 +197,11 @@ class DataReaderMin(Thread):
         self.id = _id
         self.chanN = 1
 
+    def getChanNumber(self):
+        return self.n
+
+    def setChanNumber(self, n):
+        self.n = n
 
     def setFs(self, Fs):
         self.fs = Fs
@@ -194,7 +212,7 @@ class DataReaderMin(Thread):
 
     # перекидываем наверх слоги
     def log(self, msg):
-        msg = 'DatareaderMin' + str(self.id) + ' :: ' + msg
+        msg = 'Канал #' + str(self.id + 1) + ' :: ' + msg
         print(msg)
 
     # выбираем номер канала из которого читаем
@@ -204,15 +222,18 @@ class DataReaderMin(Thread):
 
     # основная функция
     def procces(self):
+
+        self.log('Переводим данные в нужный формат...')
+
         # открываем считанный DLL-ем файл
         bts = open(self.file, "rb").read()
-        self.log('Байты прочитаны')
+
 
         # переводим байты из файла в отсчеты
         stream_len = len(bts) / 2 # количество отсчетов
         frmt = str(int(stream_len)) + 'h' # указываем сколько 16-битных чисел мы можем взять
         val = list(struct.unpack(frmt, bts)) # извлекаем
-        self.log('Байты переведены')
+
 
         if self.chanN == 1: # если считаем, что один канал (все данные это I)
             self.data.addIQ(val) # просто сохраняем
@@ -221,16 +242,16 @@ class DataReaderMin(Thread):
             Q = val[1::2]
             self.data.addIQ(I, Q) # тоже просто сохраняем
 
-        self.log('Байты разбиты')
+
 
         self.data.generateA(self.fs)  # считаем амплитуду в зависимости от I+Q или I
         self.data.genreateX() # создаем отсчеты для абсциссы - целые числа с 0 до длинны
-        self.log('Остановка')
+        self.log('Готово!')
 
     # запуск в потоке
     def run(self):
         self.ERR_FLG = False
-        self.log('Запуск')
+        self.log('Запуск...')
         try:
             self.procces()
         except:

@@ -80,13 +80,13 @@ class Plotter(QtWidgets.QWidget):
         leg = 'Канал #' + str(n) + ' - осцилограмма'
 
         if self.showSample:
-            self.oscPlot.scatter(X, Y, s=10, label='Канал #' + str(n) + ' - сeмплы')
+            self.oscPlot.scatter(X, Y, s=10, label='Канал #' + str(n) + ' - сeмплы', alpha=.5)
 
         if self.showSpline:
             xnew = np.linspace(X.min(), X.max(), len(X) * 10)
             spl = make_interp_spline(X, Y, k=3)
             power_smooth = spl(xnew)
-            self.oscPlot.plot(xnew, power_smooth, label='Канал #' + str(n) + ' - график')
+            self.oscPlot.plot(xnew, power_smooth, label='Канал #' + str(n) + ' - график', alpha=.5)
 
         # легенда справа сверху
         plt.legend(loc='upper right')
@@ -115,107 +115,105 @@ class Plotter(QtWidgets.QWidget):
         ret[n:] = ret[n:] - ret[:-n]
         return ret[n - 1:] / n
 
-    # остройка спектограммы
-    def specWithSNR(self, Xarr):
 
-        sch = 0
+    def plotSNR(self, s_dbfs, freq, chanN):
 
-        sig_max = []
-        noise = []
+        # ищем сигнал
+        sig_max_y = np.max(s_dbfs)
+        sig_max_x = freq[np.argmax(s_dbfs)]
+        sig_max_y
 
-        for X in Xarr:
-            sch = sch + 1
+        # ищем шум
+        noise_x = sig_max_x + self.offs  # нашли частоту
+
+        noise_x = np.abs(freq - noise_x)
+        noise_x = np.argmin(noise_x)  # нашли индекс частоты, которая ближе всего к нужной частоте
+
+        noise_y = s_dbfs[noise_x]
+        noise_x = freq[noise_x]
+
+        # легенду пишем только один раз
+        marker_size = 50
+        self.specPlot.scatter([sig_max_x], [sig_max_y], label='Пик сигнала', marker='x', color='black',
+                                  s=marker_size)
+        self.specPlot.scatter([noise_x], [noise_y], label='Шум по смещению', marker='+', color='black',
+                                  s=marker_size)
+
+        sig_max_y = round(sig_max_y)
+        noise_y = round(noise_y)
+
+        txt = 'Канал # ' + str(chanN)+ '\n'
+        txt = txt + 'Серднее значение сигнала: ' + str(sig_max_y) + ' dBFS\n'
+        txt = txt + 'Серднее значение шума: ' + str(noise_y) + ' dBFS\n'
+        txt = txt + 'SNR = ' + str(sig_max_y - noise_y) + ' dB'
+
+        box = {'facecolor': 'white', 'edgecolor': 'red', 'boxstyle': 'square'}
+
+        plt.text(0, sig_max_y - 10, txt,
+                 horizontalalignment='center',
+                 verticalalignment='center',
+                 bbox=box)
+
+    # отстройка спектограмы
+    def plotSpec(self, data, n):
+
+
+        Amp =   None
+        freq = None
+        iterCnt = len(data)
+        flg = True
+
+        for iterN in range(iterCnt):
+            X = data[iterN].A
+
             N = len(X)
             win = np.hamming(N)
             fs = self.fs * 2
             sp = np.fft.rfft(X)
-            freq = np.arange((N / 2) + 1) / (float(N) / fs)
             s_mag = np.abs(sp) * 2 / np.sum(win)
 
             ref = 32769
             s_dbfs = 20 * np.log10(s_mag / ref)
 
+
             # отображаем только часть спектра
             s_dbfs = s_dbfs[:int(len(s_dbfs) / 2)]
-            freq = freq[:int(len(freq) /2)]
+
+            if flg:
+                Amp = np.zeros_like(s_dbfs)
+                freq = np.arange((N / 2) + 1) / (float(N) / fs)
+                freq = freq[:int(len(freq) / 2)]
+                flg = False
+
+            if len (s_dbfs) > len(Amp):
+                s_dbfs =  s_dbfs[0:len(Amp)]
+            elif len(Amp) > len(s_dbfs):
+                Amp = Amp[0:len(s_dbfs)]
+
+            Amp = Amp + s_dbfs
+
+        Amp = Amp / iterCnt
+
+        if iterN == 0:
+            legend = 'Канал #' + str(n)
+        else:
+            legend = 'Канал #' + str(n) + ', Количество итераций: ' +  str(iterN + 1)
 
 
-            self.specPlot.plot(freq, s_dbfs, label='Считывание #' + str(sch), alpha=.5)
+        if len(freq) > len(Amp):
+            freq = freq[0:len(Amp)]
+        elif len(Amp) > len(freq):
+            Amp = Amp[0:len(freq)]
 
-            # ищем сигнал
-            sig_max_y = np.max(s_dbfs)
-            sig_max_x = freq[np.argmax(s_dbfs)]
-            sig_max.append(sig_max_y)
-
-            # ищем шум
-            noise_x = sig_max_x + self.offs # нашли частоту
-
-            noise_x = np.abs(freq - noise_x)
-            noise_x = np.argmin(noise_x) # нашли индекс частоты, которая ближе всего к нужной частоте
-
-            noise_y = s_dbfs[noise_x]
-            noise_x = freq[noise_x]
-
-            noise.append(noise_y)
-
-            # легенду пишем только один раз
-            marker_size = 50
-            if sch == 1:
-                self.specPlot.scatter([sig_max_x], [sig_max_y], label='Пик сигнала', marker='x', color='black',s=marker_size)
-                self.specPlot.scatter([noise_x], [noise_y], label='Шум по смещению', marker='+', color='black',s=marker_size)
-            else:
-                self.specPlot.scatter([sig_max_x], [sig_max_y], marker='x', color='black', s=marker_size)
-                self.specPlot.scatter([noise_x], [noise_y], marker='+', color='black', s=marker_size)
-
-        sig_mid  = np.sum(sig_max) / len(sig_max)
-        sig_mid = math.floor(sig_mid)
-        noise_mid = np.sum(noise) / len(noise)
-        noise_mid = math.floor(noise_mid)
-
-        txt = 'Серднее значение сигнала: ' + str(sig_mid) + ' dBFS\n'
-        txt = txt + 'Серднее значение шума: ' + str(noise_mid) + ' dBFS\n'
-        txt = txt + 'SNR = ' + str(sig_mid - noise_mid) + ' dB'
+        self.specPlot.plot(freq, Amp, label=legend, alpha=.5)
 
 
-        box = {'facecolor' : 'white', 'edgecolor' : 'red', 'boxstyle' : 'square'}
-
-        plt.text(0.5, 0.5, txt,
-             horizontalalignment='center',
-             verticalalignment='center',
-                 bbox=box)
-
-
-
-
-        plt.xlabel('Частота, Hz')
-        plt.ylabel('Сигнал, dBFS')
-        plt.legend(loc='upper right')
-        plt.grid(True)
-        self.figure.canvas.draw()
-
-    # отстройка спектограмы
-    def plotSpec(self, X, n):
-
-        N = len(X)
-        win = np.hamming(N)
-        fs = self.fs * 2
-        sp = np.fft.rfft(X)
-        freq = np.arange((N / 2) + 1) / (float(N) / fs)
-        s_mag = np.abs(sp) * 2 / np.sum(win)
-
-        ref = 32769
-        s_dbfs = 20 * np.log10(s_mag / ref)
-
-        # отображаем только часть спектра
-        s_dbfs = s_dbfs[:int(len(s_dbfs) / 2)]
-        freq = freq[:int(len(freq) / 2)]
-
-        self.specPlot.plot(freq, s_dbfs,label='Канал #' + str(n), alpha=.5)
-
+        if self.snr and n == self.snrChan:
+            self.plotSNR(Amp, freq, n)
 
         # легенда
-        plt.xlabel('Частота')
-        plt.ylabel('dBFS')
+        plt.xlabel('Частота, Гц')
+        plt.ylabel('Амплитуда, dBFS')
         plt.legend(loc='upper right')
         plt.grid(True)
 
@@ -227,7 +225,13 @@ class Plotter(QtWidgets.QWidget):
         self.showSample = lst['showSample']
         self.showSpline = lst['showSpline']
         self.fs = lst['fs']
+
+
+        self.snr = lst['snr']
+        self.snrChan = lst['snrChan']
         self.offs = lst['offs']
+
+
 
         maxOscVal = 0
 

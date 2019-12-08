@@ -20,7 +20,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
     def selectFilePushButtonClicked(self):
         self.filePathLineEdit.setText(QFileDialog.getOpenFileName()[0])
 
-
     # при нажатии на кноку автообновление
     def startUpdate(self):
 
@@ -28,7 +27,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             tout = float(self.updateLineEdit.text())
             tout = 1000 * tout
-            tout = int(tout)
+            tout = float(tout)
         except:
             self.showErr('Неверный интервал обновления!')
             return
@@ -67,30 +66,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
     def showErr(self, text):
         QtWidgets.QMessageBox.critical(self, 'Ошибка!', text)
 
-    # выборка каналов для Спектра
-    def switchChannelsSpec(self):
-        channels = []
-
-        if self.specChan1checkBox.isChecked():
-            channels.append(0)
-        if self.specChan2checkBox.isChecked():
-            channels.append(1)
-        if self.specChan3checkBox.isChecked():
-            channels.append(2)
-        if self.specChan4checkBox.isChecked():
-            channels.append(3)
-        if self.specChan5checkBox.isChecked():
-            channels.append(4)
-        if self.specChan6checkBox.isChecked():
-            channels.append(5)
-        if self.specChan7checkBox.isChecked():
-            channels.append(6)
-        if self.specChan8checkBox.isChecked():
-            channels.append(7)
-
-
-        return channels
-
     # выборка каналов для Осцилограммы
     def _switchCnannels(self):
         channels = []
@@ -117,16 +92,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
     # обновление параметров чтения
     def updateReaderParams(self):
         try:
-
-
-            if self.snrModeRadioButton.isChecked():
-                channels = [int(self.SNR_chanComboBox.currentText()) -1 ]
-            elif not self.specModeRadioButton.isChecked():
-                channels = self._switchCnannels()
-                if not len(channels):
-                    raise
-            else:
-                channels = self.switchChannelsSpec()
+            channels = self._switchCnannels()
 
 
             if not len(channels):
@@ -134,18 +100,33 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
             pointCnt = self.pointCntSpinBox.value()
 
-            chanN = int(self.chanComboBox.currentText())
 
-            fs = int(self.SNR_fsLineEdit.text())
+            if self.chanCheckBox.isChecked():
+                chanN = 1
+            else:
+                chanN = 2
+
+            fs = self.getFs()
 
             # ---
 
             self.datareader.setChanN(chanN)
             self.datareader.initReader(fs, channels, pointCnt, self.addrLineEdit.text())
 
+
+            return True
         except:
             self.showErr('Неверные параметры!')
+            raise
+            return False
 
+    def getFs(self):
+        fs =  int(self.SNR_fsLineEdit.text())
+        if self.fsComboBox.currentText() == 'КГц':
+            fs = fs * 1000
+        elif self.fsComboBox.currentText() == 'МГц':
+            fs = fs * 1000000
+        return fs
 
     # обновление параметров графиков
     # в случае неверных параметров возвращает False
@@ -155,27 +136,36 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
             if self.oscModeRadioButton.isChecked():
                 lst['mode'] = 'osc'
+                self.cnt = 1
             elif self.specModeRadioButton.isChecked():
                 lst['mode'] = 'spec'
-            elif self.snrModeRadioButton.isChecked():
-                lst['mode'] = 'snr'
+                self.cnt = int(self.cntLineEdit.text())
 
 
             lst['showSample'] = self.showSampleCheckBox.isChecked()
             lst['showSpline'] = self.showSplineCheckBox.isChecked()
 
 
+            # выставляем значение частоты дискретизаци
+            lst['fs'] = self.getFs()
 
-            lst['fs'] = int(self.SNR_fsLineEdit.text())
 
-
-
+            # работа с коэф. шума
             lst['offs'] = int(self.SNR_offsetLineEdit.text())
+            if self.SNR_offsComboBox.currentText() == 'КГц':
+                lst['offs'] = lst['offs'] * 1000
+            elif self.SNR_offsComboBox.currentText() == 'МГц':
+                lst['offs'] = lst['offs'] * 1000000
+
+            lst['snr'] = self.SNR_checkBox.isChecked()
+
+            lst['snrChan'] = int(self.SNR_chanComboBox.currentText())
 
             self.plotwidget.plotter.setParams(lst)
 
         except:
             self.showErr('Неверные параметры!')
+            raise
             return False
 
         return True
@@ -185,6 +175,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         # читалка
         self.datareader = DataReader()
         self.datareader.log_signal.connect(self.writeLog)
+        self.datareader.initDLL()
 
         # графики
         self.plotwidget = PlotWidget()
@@ -199,7 +190,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setCentralWidget(self.cw)
         self.initTray()
-
 
     # работа в свернутом режиме
     def initTray(self):
@@ -223,76 +213,65 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.logTextEdit.setText(old_text + '\n' + msg) # дополняем
 
-    # остройка SNR
-    def startSNR(self):
-        if not self.updatePlotParams():
-            return
-
-        self.showMessageTray('Обновляем графики...')
-
-
-
-
-        data = []
-        n = int(self.SNR_cntLineEdit.text())
-        for i in range(n):
-            self.updateReaderParams()
-            self.datareader.run()
-            _data = self.datareader.data[0]
-            _data.rem(int(self.cntSpinBox.text()))
-            _data = _data.A
-            data.append(_data)
-
-
-
-
-
-
-        self.plotwidget.plotter.specWithSNR(data)
-        self.plotwidget.show()
-
     # запуск считыания
     def start(self):
 
-        # обрабатываем особоым способом
-        if self.snrModeRadioButton.isChecked():
-            self.startSNR()
-            return
-
         if not self.updatePlotParams():
             return
 
         self.showMessageTray('Обновляем графики...')
 
 
-        # выставляем параметры DataReader
-        self.updateReaderParams()
+        data = {}
 
-        # пускаем
-        while not self.datareader.run():
-            pass
+
+
+        for i in range(self.cnt):
+            # пускаем, ждем, когда считается
+            flg = True
+            sch = 0
+            while flg:
+
+                if not self.updateReaderParams():
+                    return
+                if self.datareader.run():
+                    flg = False
+                    for k in self.datareader.data:
+                        if not k in data:
+                            data[k] = []
+                        data[k].append(self.datareader.data[k])
+                else:
+                    sch = sch + 1
+                    if sch > 10:
+                        self.showErr('Не удалось считать после 10 попыток!')
+                        return
+
+
 
         # если только считать файлы
         if self.onlySaveCheckBox.isChecked():
-            return 
+            return
 
+        for chan in data:
+            for i in range(len(data[chan])):
+                data[chan][i].rem(int(self.cntSpinBox.text()))
 
         # ображаем графиики
-        self.plotwidget.show()   
-        sch = 0
-        for data in self.datareader.data: # перебираем каналы
+        self.plotwidget.show()
 
-            n = self.datareader.THREAD_N[sch] + 1
-            sch = sch + 1
-            data.rem(int(self.cntSpinBox.text()))
+        if self.oscModeRadioButton.isChecked():
+            for chanN in data:
+                _data = data[chanN][0]
+                self.plotwidget.plotter.oscSize = int(self.cntSpinBox.value())
+                self.plotwidget.plotter.plotOsc(_data.X, _data.A, chanN + 1)
+        elif self.specModeRadioButton.isChecked():
+            for chanN in data:
+                _data = data[chanN]
+                self.plotwidget.plotter.plotSpec(_data, chanN + 1)
+        else:
+            return
 
-            self.plotwidget.plotter.oscSize = int(self.cntSpinBox.value())
 
-            if self.oscModeRadioButton.isChecked():
-                self.plotwidget.plotter.plotOsc(data.X, data.A, n)
-
-            if self.specModeRadioButton.isChecked():
-                self.plotwidget.plotter.plotSpec(data.A, n)
 
     # нажатие на кнопку стоп
     def stopPushButtonClicked(self):
@@ -329,12 +308,16 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # настраиваем-запускаем
             self.datareader.setChanN(chanN)
-            self.datareader.readFile(self.filePathLineEdit.text())
+            self.datareader.fs = self.getFs()
+
+            if not self.datareader.readFile(self.filePathLineEdit.text()):
+                return
 
 
             #  пусто
             if not len(self.datareader.data):
                 return 
+
 
             self.plotwidget.show()
 
@@ -349,13 +332,12 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # выбираем нужный вид графика и строим
             if self.oscModeRadioButton.isChecked():
+                self.plotwidget.plotter.oscSize = int(self.cntSpinBox.value())
                 self.plotwidget.plotter.plotOsc(data.X, data.A, 0)
-
-            if self.iqModeRadioButton.isChecked():
-                   self.plotwidget.plotter.plotIQ(data.X, data.I, data.Q, 0)
-
-            if self.specModeRadioButton.isChecked():
-                self.plotwidget.plotter.plotSpec(data.A, 0)
+            elif self.specModeRadioButton.isChecked():
+                self.plotwidget.plotter.plotSpec([data], 0)
+            else:
+                return
 
     # очистка лога
     def clearLogPushButtonClicked(self):
