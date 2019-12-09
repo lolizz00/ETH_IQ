@@ -60,12 +60,10 @@ class IQ:
 
     #def filter(self):
 
-
     def upsample(self, X):
         ind = np.arange(1, len(X), 1)
         X = np.insert(X, ind, 0)
         return X
-
 
     def LPF(self, X, fs):
         w = (fs / 2) / (fs)
@@ -80,8 +78,7 @@ class IQ:
         I = self.I
         Q = self.Q
 
-
-        IQ = I + 1j* Q
+        IQ = I + 1j * Q
 
         IQ = self.upsample(IQ)
 
@@ -92,5 +89,6 @@ class IQ:
         # срезаем после 2500 для осцилограммы
         IQ = self.LPF(IQ, Fs)
 
-        self.A = IQ
+        #self.A = IQ
+        self.A = IQ[20:]
 
