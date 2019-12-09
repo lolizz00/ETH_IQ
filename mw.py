@@ -381,7 +381,7 @@ class Ui_MainWindow(object):
         self.chan8checkBox.setText(_translate("MainWindow", "Канал 8"))
         self.label_6.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Настройки спектограммы</span></p></body></html>"))
         self.label_14.setText(_translate("MainWindow", "Усреднение: "))
-        self.cntLineEdit.setText(_translate("MainWindow", "1"))
+        self.cntLineEdit.setText(_translate("MainWindow", "3"))
         self.SNR_offsetLineEdit.setText(_translate("MainWindow", "1000"))
         self.label_9.setText(_translate("MainWindow", "Канал:"))
         self.label_3.setText(_translate("MainWindow", "Смещение от пика"))

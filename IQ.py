@@ -79,10 +79,13 @@ class IQ:
         Q = self.Q
 
         IQ = I + 1j * Q
+        self.IQ = IQ
 
         IQ = self.upsample(IQ)
 
         IQ = IQ * np.exp(1j * 2 * np.pi * Fs / 4)
+
+
 
         IQ = np.real(IQ)
 

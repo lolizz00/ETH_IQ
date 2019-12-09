@@ -154,69 +154,54 @@ class Plotter(QtWidgets.QWidget):
 
         box = {'facecolor': 'white', 'edgecolor': 'red', 'boxstyle': 'square'}
 
-        plt.text(0, sig_max_y - 10, txt,
+        plt.text(np.min(freq), sig_max_y - 10, txt,
                  horizontalalignment='center',
                  verticalalignment='center',
                  bbox=box)
 
+    def find_nearest(self, array, value):
+        array = np.asarray(array)
+        idx = (np.abs(array - value)).argmin()
+        return idx
+
+    def sumAmp(self, Amp, freq, Amp1, freq1):
+        for i in range(len(Amp)):
+            ind = self.find_nearest(freq1, freq[i]) # нашли под каким индексом частота, наиболее близкая к нашей
+            Amp[i] = Amp[i] + Amp1[ind]
+        return Amp
+
     # отстройка спектограмы
     def plotSpec(self, data, n):
-
-        # ----
-
-
-        # ----
-
 
 
         Amp =   None
         freq = None
         iterCnt = len(data)
-        flg = True
 
         for iterN in range(iterCnt):
-            X = data[iterN].A
+            IQ = data[iterN].IQ
+            ln = int(len(IQ) / 4)
 
-            N = len(X)
-            win = np.hamming(N)
-            fs = self.fs * 2
-            sp = np.fft.rfft(X)
+            X,_freq  = self.specPlot.psd(IQ, NFFT=ln, Fs=self.fs, window=np.bartlett(ln))
+            self.specPlot.clear()
 
+            if iterN == 0:
+                freq = _freq
+                Amp = X
+            else:
+                Amp = self.sumAmp(Amp, freq, X, _freq)
 
-            s_mag = np.abs(sp) * 2 / np.sum(win)
-
-            ref = 32769
-            s_dbfs = 20 * np.log10(s_mag / ref)
-
-
-            # отображаем только часть спектра
-            s_dbfs = s_dbfs[:int(len(s_dbfs) / 2)]
-
-            if flg:
-                Amp = np.zeros_like(s_dbfs)
-                freq = np.arange((N / 2) + 1) / (float(N) / fs)
-                freq = freq[:int(len(freq) / 2)]
-                flg = False
-
-            if len (s_dbfs) > len(Amp):
-                s_dbfs =  s_dbfs[0:len(Amp)]
-            elif len(Amp) > len(s_dbfs):
-                Amp = Amp[0:len(s_dbfs)]
-
-            Amp = Amp + s_dbfs
 
         Amp = Amp / iterCnt
+
+        ref = 32769
+        Amp = 20 * np.log10(Amp / ref)
 
         if iterN == 0:
             legend = 'Канал #' + str(n)
         else:
             legend = 'Канал #' + str(n) + ', Количество итераций: ' +  str(iterN + 1)
 
-
-        if len(freq) > len(Amp):
-            freq = freq[0:len(Amp)]
-        elif len(Amp) > len(freq):
-            Amp = Amp[0:len(freq)]
 
         self.specPlot.plot(freq, Amp, label=legend, alpha=.5)
 

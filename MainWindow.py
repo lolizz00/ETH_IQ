@@ -218,7 +218,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if showErr:
             pass
-            self.showErr(msg)
+            #self.showErr(msg)
 
     # запуск считыания
     def start(self):
