@@ -122,7 +122,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             return True
         except:
             self.showErr('Неверные параметры!')
-            raise
             return False
 
     def getFs(self):
@@ -170,7 +169,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
         except:
             self.showErr('Неверные параметры!')
-            raise
             return False
 
         return True
@@ -209,7 +207,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tray.showMessage('Этажерка', message,msecs=10)
 
     # запись в лог
-    def writeLog(self, msg):
+    def writeLog(self, msg, showErr=False):
         old_text = self.logTextEdit.toPlainText()
 
         # пустой
@@ -217,6 +215,10 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             self.logTextEdit.setText(msg)
         else:
             self.logTextEdit.setText(old_text + '\n' + msg) # дополняем
+
+        if showErr:
+            pass
+            self.showErr(msg)
 
     # запуск считыания
     def start(self):

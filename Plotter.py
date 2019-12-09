@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
+import scipy.fftpack as fftpack
 
 import math
 # остройка графиков
@@ -73,6 +74,10 @@ class Plotter(QtWidgets.QWidget):
         self.figure.canvas.draw()
 
     def plotOsc(self, X, Y, n):
+
+        # ----
+
+        # ----
 
         if self.mode != 'osc':
             return
@@ -157,6 +162,12 @@ class Plotter(QtWidgets.QWidget):
     # отстройка спектограмы
     def plotSpec(self, data, n):
 
+        # ----
+
+
+        # ----
+
+
 
         Amp =   None
         freq = None
@@ -170,6 +181,8 @@ class Plotter(QtWidgets.QWidget):
             win = np.hamming(N)
             fs = self.fs * 2
             sp = np.fft.rfft(X)
+
+
             s_mag = np.abs(sp) * 2 / np.sum(win)
 
             ref = 32769

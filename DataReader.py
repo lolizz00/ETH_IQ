@@ -27,7 +27,7 @@ class DataReader(QObject):
     REALTIME_FLG = True
 
     # запись в лог в GUI
-    log_signal = pyqtSignal(str)
+    log_signal = pyqtSignal(str, bool)
 
 
     # перевод количетсва точек в количество посылок
@@ -58,9 +58,9 @@ class DataReader(QObject):
 
 
     # запись в лог
-    def log(self, msg):
+    def log(self, msg, showErr=False):
         msg = 'Datareader: ' + msg
-        self.log_signal.emit(msg)
+        self.log_signal.emit(msg, showErr)
         print(msg)
 
     # загрузка библиотеки
@@ -152,7 +152,7 @@ class DataReader(QObject):
                 if self.read(self.POS_N,c_char_p (self.addr.encode ('utf-8'))) != 0:
                     raise
             except:
-                self.log('Устройство не подключено!')
+                self.log('Устройство не подключено! Отображаем старые данные', True)
                 self.log('Пробуем считать старые данные...')
 
 
@@ -256,6 +256,7 @@ class DataReaderMin(Thread):
             self.procces()
         except:
             self.ERR_FLG = True
+            raise
 
 
 

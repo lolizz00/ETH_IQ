@@ -51,7 +51,7 @@ int verPos()
 			uint32_t b = *(uint32_t*)buffs[j][i + 1];
 
 
-			//cout << a <<  " " << b << endl;
+			//cout << a  << endl;
 
 			if ((a + 1) != b)
 			{
@@ -89,12 +89,12 @@ void writeFile(int n, uint8_t** buff)
 
 
 	//cout << "Down offs: " << down_offs[n] << "\tUp offs:" << up_offs[n] << endl;
+
 	for(int i = down_offs[n]; i < POS_N_WRITE - up_offs[n];i++)
 	{
 		sh++;
 		fwrite(buff[i] + 4, POS_SIZE - 4, 1, fp);
 		sch = sch + 1;
-		i = i + 1;
 	}
 
 	//cout << "Data len: " << sh << endl;
