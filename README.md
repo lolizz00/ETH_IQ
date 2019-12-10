@@ -17,7 +17,7 @@
 - PyQt5
 - numpy
 - scipy
-- matplotlib
+- pyqtgraph
 
 #### Установка пакетов: `python -m pip install [имя пакета]`. Например: `python -m pip install numpy`. 
 #### Если Python не был добавлен в переменные среды, то используйте синтаксис `[папка установки]\python.exe -m pip install [имя пакета]`. Например: `C:\Python37\python.exe -m pip install numpy`.

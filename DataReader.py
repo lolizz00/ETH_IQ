@@ -153,7 +153,7 @@ class DataReader(QObject):
                     raise
             except:
                 self.log('Устройство не подключено! Отображаем старые данные', True)
-                self.log('Пробуем считать старые данные...')
+                #self.log('Пробуем считать старые данные...')
 
 
 
@@ -161,16 +161,16 @@ class DataReader(QObject):
 
 
         # запускаем потоки для каждого канала
-        self.log('Запускаем потоки...')
+        #self.log('Запускаем потоки...')
         for th in self.th:
             th.start()
 
-        self.log('Ждем окончание работы потоков...')
+        #self.log('Ждем окончание работы потоков...')
         # ждем окончания работы всех потоков
         for th in self.th:
             th.join()
 
-        self.log('Собираем данные...')
+        #self.log('Собираем данные...')
         # соеднияем данные
         for th in self.th:
             n = th.getChanNumber()
@@ -183,7 +183,7 @@ class DataReader(QObject):
 
         return True
 
-        self.log('Успешно!')
+        #self.log('Успешно!')
 
 class DataReaderMin(Thread):
 
@@ -223,7 +223,7 @@ class DataReaderMin(Thread):
     # основная функция
     def procces(self):
 
-        self.log('Переводим данные в нужный формат...')
+        #self.log('Переводим данные в нужный формат...')
 
         # открываем считанный DLL-ем файл
         bts = open(self.file, "rb").read()
@@ -246,12 +246,12 @@ class DataReaderMin(Thread):
 
         self.data.generateA(self.fs)  # считаем амплитуду в зависимости от I+Q или I
         self.data.genreateX() # создаем отсчеты для абсциссы - целые числа с 0 до длинны
-        self.log('Готово!')
+        #self.log('Готово!')
 
     # запуск в потоке
     def run(self):
         self.ERR_FLG = False
-        self.log('Запуск...')
+        #self.log('Запуск...')
         try:
             self.procces()
         except:

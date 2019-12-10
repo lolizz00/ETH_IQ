@@ -2,19 +2,20 @@
 from mw import Ui_MainWindow
 
 from DataReader import DataReader
-from Plotter import Plotter
+
 from PyQt5.QtCore import *
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QSystemTrayIcon
 
-from PlotWidget import PlotWidget
+from PlotWid import PlotWid
 
 import numpy as np
+
 class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
-
+    COLORS = [ '8B0000', 'E9967A', 'FF8C00', 'afa500', '9370DB', '4B0082', '006400', '696969']
 
     # выбор файла для остройки из него
     def selectFilePushButtonClicked(self):
@@ -165,7 +166,10 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
             lst['snrChan'] = int(self.SNR_chanComboBox.currentText())
 
-            self.plotwidget.plotter.setParams(lst)
+            self.plotwidget.setParams(lst)
+
+
+            self.plotwidget.clear()
 
         except:
             self.showErr('Неверные параметры!')
@@ -181,8 +185,8 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.datareader.initDLL()
 
         # графики
-        self.plotwidget = PlotWidget()
-        self.plotwidget.plotter.log_signal.connect(self.writeLog)
+        self.plotwidget = PlotWid()
+#        self.plotwidget.plotter.log_signal.connect(self.writeLog)
         self.plotwidget.stop_signal.connect(self.stopPushButtonClicked)
 
         # таймер для регулярного обновления
@@ -274,7 +278,6 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for chan in data:
             for i in range(len(data[chan])):
-                pass
                 data[chan][i].remA(min)
 
         # ----
@@ -286,14 +289,25 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.plotwidget.show()
 
         if self.oscModeRadioButton.isChecked():
+            sch = 0
             for chanN in data:
+                sch = sch + 1
                 _data = data[chanN][0]
-                self.plotwidget.plotter.oscSize = int(self.cntSpinBox.value())
-                self.plotwidget.plotter.plotOsc(_data.X, _data.A, chanN + 1)
+                if sch == 1:
+                    self.plotwidget.plotOsc(_data.X, _data.A, chanN + 1,  self.COLORS[chanN], showLeg=True)
+                else:
+                    self.plotwidget.plotOsc(_data.X, _data.A, chanN + 1, self.COLORS[chanN])
+
         elif self.specModeRadioButton.isChecked():
+            sch = 0
             for chanN in data:
+                sch = sch + 1
                 _data = data[chanN]
-                self.plotwidget.plotter.plotSpec(_data, chanN + 1)
+
+                if sch == 1:
+                    self.plotwidget.plotSpec(_data, chanN + 1, self.COLORS[chanN], showLeg=True)
+                else:
+                    self.plotwidget.plotSpec(_data, chanN + 1, self.COLORS[chanN])
         else:
             return
 
@@ -324,13 +338,14 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             if not self.suppFileCheckBox.isChecked(): # если выбрано "удерживать прошлый график"
                 if not self.updatePlotParams(): # если неверные параметры графика, выходим
                     return
-            else:
-               if not self.plotwidget.plotter.specPlot and not self.plotwidget.plotter.oscPlot and not self.plotwidget.plotter.oscPlotQ: # если график еще не создан
-                   self.updatePlotParams() # создаем
+
 
 
             # выбираем режим IQ I
-            chanN = int(self.chanComboBox.currentText())
+            if self.chanCheckBox.isChecked():
+                chanN = 1
+            else:
+                chanN = 2
 
             # настраиваем-запускаем
             self.datareader.setChanN(chanN)
@@ -353,15 +368,14 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
             # удаляем лишние данные
-            data.rem(int(self.cntSpinBox.text()))
+            data.remA(int(self.cntSpinBox.text()))
 
 
             # выбираем нужный вид графика и строим
             if self.oscModeRadioButton.isChecked():
-                self.plotwidget.plotter.oscSize = int(self.cntSpinBox.value())
-                self.plotwidget.plotter.plotOsc(data.X, data.A, 0)
+                self.plotwidget.plotOsc(data.X, data.A, 0)
             elif self.specModeRadioButton.isChecked():
-                self.plotwidget.plotter.plotSpec([data], 0)
+                self.plotwidget.plotSpec([data], 0)
             else:
                 return
 

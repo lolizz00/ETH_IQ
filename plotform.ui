@@ -13,16 +13,6 @@
   <property name="windowTitle">
    <string>Графики</string>
   </property>
-  <widget class="Plotter" name="plotter" native="true">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>20</y>
-     <width>551</width>
-     <height>371</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QGroupBox" name="controlGroupBox">
    <property name="geometry">
     <rect>
@@ -74,12 +64,22 @@
     </property>
    </widget>
   </widget>
+  <widget class="PlotWidget" name="plotter" native="true">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>40</y>
+     <width>721</width>
+     <height>401</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Plotter</class>
+   <class>PlotWidget</class>
    <extends>QWidget</extends>
-   <header location="global">Plotter</header>
+   <header>pyqtgraph</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

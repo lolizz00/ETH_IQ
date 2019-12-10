@@ -1,6 +1,5 @@
 from DataReader import DataReader
 from DataReader import DataReaderMin
-import matplotlib.pyplot as plt
 from scipy.signal import kaiserord, lfilter, firwin, freqz
 from scipy.interpolate import make_interp_spline, BSpline
 from scipy import signal

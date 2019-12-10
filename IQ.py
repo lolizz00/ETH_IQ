@@ -3,7 +3,6 @@ from scipy import signal
 from scipy import fftpack
 from scipy.signal import butter, lfilter
 from scipy.signal import butter, lfilter, freqz
-import matplotlib.pyplot as plt
 import scipy.fftpack as fftpack
 
 

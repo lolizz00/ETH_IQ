@@ -13,9 +13,6 @@ class Ui_Plot(object):
     def setupUi(self, Plot):
         Plot.setObjectName("Plot")
         Plot.resize(758, 556)
-        self.plotter = Plotter(Plot)
-        self.plotter.setGeometry(QtCore.QRect(80, 20, 551, 371))
-        self.plotter.setObjectName("plotter")
         self.controlGroupBox = QtWidgets.QGroupBox(Plot)
         self.controlGroupBox.setGeometry(QtCore.QRect(20, 440, 711, 100))
         self.controlGroupBox.setMinimumSize(QtCore.QSize(0, 100))
@@ -27,6 +24,9 @@ class Ui_Plot(object):
         self.helpPushButton = QtWidgets.QPushButton(self.controlGroupBox)
         self.helpPushButton.setGeometry(QtCore.QRect(30, 60, 75, 23))
         self.helpPushButton.setObjectName("helpPushButton")
+        self.plotter = PlotWidget(Plot)
+        self.plotter.setGeometry(QtCore.QRect(20, 40, 721, 401))
+        self.plotter.setObjectName("plotter")
 
         self.retranslateUi(Plot)
         QtCore.QMetaObject.connectSlotsByName(Plot)
@@ -39,4 +39,4 @@ class Ui_Plot(object):
         self.helpPushButton.setText(_translate("Plot", "Справка"))
 
 
-from Plotter import Plotter
+from pyqtgraph import PlotWidget
