@@ -39,6 +39,9 @@ class IQ:
 
         self.A = self.A[:lim]
         self.X = self.X[:lim]
+        self.IQ = self.IQ[:lim]
+
+
 
     # удаление 'лишних' данные для возвращения в лимит
     def rem(self, lim):

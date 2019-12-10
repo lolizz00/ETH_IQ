@@ -10,6 +10,12 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
 import scipy.fftpack as fftpack
+from scipy.fftpack import fft, fftfreq, fftshift
+
+
+import warnings
+warnings.filterwarnings("ignore")
+
 
 import math
 # остройка графиков
@@ -161,6 +167,10 @@ class Plotter(QtWidgets.QWidget):
 
     def find_nearest(self, array, value):
         array = np.asarray(array)
+        t, = np.where(array == value)
+        if len(t):
+            return t[0]
+
         idx = (np.abs(array - value)).argmin()
         return idx
 
@@ -170,32 +180,53 @@ class Plotter(QtWidgets.QWidget):
             Amp[i] = Amp[i] + Amp1[ind]
         return Amp
 
+    def fixIQSize(self,data):
+
+        min = 1e10
+        for iterN in range(len(data)):
+            ln = len(data[iterN].IQ)
+
+            if ln < min:
+                min = ln
+
+        for iterN in range(len(data)):
+            data[iterN].IQ = data[iterN].IQ[:min]
+
+        return data
+
     # отстройка спектограмы
     def plotSpec(self, data, n):
-
 
         Amp =   None
         freq = None
         iterCnt = len(data)
 
+        data = self.fixIQSize(data)
+
         for iterN in range(iterCnt):
             IQ = data[iterN].IQ
-            ln = int(len(IQ) / 4)
+            ln = len(IQ)
 
-            X,_freq  = self.specPlot.psd(IQ, NFFT=ln, Fs=self.fs, window=np.bartlett(ln))
-            self.specPlot.clear()
+            T = 1 / self.fs
+            IQ = fft(IQ)
+            IQ = fftshift(IQ)
+            win = np.hamming(ln)
+            IQ = np.abs(IQ) * 2 / np.sum(win)
+            ref = 32769
+            X = 20 * np.log10(IQ / ref)
+
+            _freq = fftfreq(ln, T)
+            _freq = fftshift(_freq)
 
             if iterN == 0:
                 freq = _freq
                 Amp = X
             else:
-                Amp = self.sumAmp(Amp, freq, X, _freq)
+                Amp = Amp + X
+                #Amp = self.sumAmp(Amp, freq, X, _freq)
 
 
         Amp = Amp / iterCnt
-
-        ref = 32769
-        Amp = 20 * np.log10(Amp / ref)
 
         if iterN == 0:
             legend = 'Канал #' + str(n)
@@ -204,14 +235,14 @@ class Plotter(QtWidgets.QWidget):
 
 
         self.specPlot.plot(freq, Amp, label=legend, alpha=.5)
-
+        #self.specPlot.set_yscale('log')
 
         if self.snr and n == self.snrChan:
             self.plotSNR(Amp, freq, n)
 
         # легенда
-        plt.xlabel('Частота, Гц')
-        plt.ylabel('Амплитуда, dBFS')
+        plt.xlabel('Frequency, Hz')
+        plt.ylabel('Power, dBFS')
         plt.legend(loc='upper right')
         plt.grid(True)
 

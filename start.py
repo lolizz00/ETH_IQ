@@ -27,6 +27,14 @@ import sys
 sys.excepthook = log_uncaught_exceptions
 
 def start():
+
+
+    # ----
+
+
+
+    # ----
+
     app = QtWidgets.QApplication(sys.argv)
     mv = MW()
 
