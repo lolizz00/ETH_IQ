@@ -81,6 +81,7 @@ class IQ:
         Q = self.Q
 
         IQ = I + 1j * Q
+
         self.IQ = IQ
 
         IQ = self.upsample(IQ)

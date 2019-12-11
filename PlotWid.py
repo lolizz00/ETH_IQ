@@ -171,6 +171,11 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
         return data
 
+
+
+    def safe_ln(self, x, minval=0.0000000001):
+        return np.log10(x.clip(min=minval))
+
     # отстройка спектограмы
     def plotSpec(self, data, n, pen='8B0000', showLeg=False):
 
@@ -188,8 +193,15 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
             IQ = data[iterN].IQ
             ln = len(IQ)
 
+
             T = 1 / self.fs
-            IQ = fft(IQ)
+            _IQ = fft(IQ)
+            if 0 in _IQ:
+                _IQ = fft(IQ[:len(IQ)-1])
+                ln = ln - 1
+
+            IQ = _IQ
+
             IQ = fftshift(IQ)
 
 
@@ -205,7 +217,10 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
             IQ = np.abs(IQ) * 2 / np.sum(win)
             ref = 32769
-            X = 20 * np.log10(IQ / ref)
+
+            t = IQ / ref
+
+            X = 20 * self.safe_ln(t)
 
             _freq = fftfreq(ln, T)
             _freq = fftshift(_freq)
