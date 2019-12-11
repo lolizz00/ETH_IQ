@@ -192,7 +192,16 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
             IQ = fft(IQ)
             IQ = fftshift(IQ)
 
-            win = np.hamming(ln)
+
+            if self.win == 'Bartlett window':
+                win = np.bartlett(ln)
+            elif self.win == 'Blackman window':
+                win = np.blackman(ln)
+            elif self.win == 'Hamming window':
+                win = np.hamming(ln)
+            elif self.win == 'Hanning window':
+                win = np.hanning(ln)
+
 
             IQ = np.abs(IQ) * 2 / np.sum(win)
             ref = 32769
@@ -223,6 +232,8 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
             self.legend = self.plotter.plotItem.legend
 
 
+
+        freq = freq + self.null
         self.plotter.plotItem.plot(freq, Amp, pen=pg.mkPen({'color': pen}), name=legend)
 
 
@@ -252,6 +263,9 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
         self.snrChan = lst['snrChan']
         self.offs = lst['offs']
 
+
+        self.win = lst['win']
+        self.null = lst['null']
 
 
         maxOscVal = 0

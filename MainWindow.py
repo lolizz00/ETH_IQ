@@ -166,6 +166,11 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
 
             lst['snrChan'] = int(self.SNR_chanComboBox.currentText())
 
+
+            lst['win'] = (self.winComboBox.currentText())
+            lst['null'] = int(self.nullLineEdit.text())
+
+
             self.plotwidget.setParams(lst)
 
 
