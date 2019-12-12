@@ -50,6 +50,10 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
         event.ignore()
 
 
+
+    #def initZoom(self):
+     #   self.plotter.sigMouseClicked.connect(self.onClick)
+
     def preInitUi(self):
         self.setupUi(self)
 
@@ -79,7 +83,7 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
         self.plotter.plotItem.getViewBox().setBackgroundColor('w')
         p = myGridItem()
-        p.setColor([0, 0, 0])
+        p.setColor([0, 0, 0, 10])
         self.plotter.addItem(p)
 
 
@@ -98,7 +102,7 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
             xnew = np.linspace(X.min(), X.max(), len(X) * 10)
             spl = make_interp_spline(X, Y, k=3)
             power_smooth = spl(xnew)
-            self.plotter.plotItem.plot(xnew, power_smooth, pen=pg.mkPen({'color': pen}), name=leg)
+            self.plotter.plotItem.plot(xnew, power_smooth, pen=pg.mkPen({'color': pen, 'width' : 0.9}), name=leg) #, width: 2
 
 
 
@@ -249,11 +253,11 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
 
         freq = freq + self.null
-        self.plotter.plotItem.plot(freq, Amp, pen=pg.mkPen({'color': pen}), name=legend)
+        self.plotter.plotItem.plot(freq, Amp, pen=pg.mkPen({'color': pen, 'width' : 2}), name=legend)
 
 
         p = myGridItem()
-        p.setColor([0,0,0])
+        p.setColor([0,0,0, 10])
         self.plotter.addItem(p)
 
 

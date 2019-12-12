@@ -88,8 +88,6 @@ class IQ:
 
         IQ = IQ * np.exp(1j * 2 * np.pi * Fs / 4)
 
-
-
         IQ = np.real(IQ)
 
         # срезаем после 2500 для осцилограммы

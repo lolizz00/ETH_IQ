@@ -84,8 +84,9 @@ class myGridItem(UIGraphicsItem):
             for ax in range(0,2):  ## Draw grid for both axes
                 ppl = dim[ax] / nl[ax]
                 c = np.clip(3.*(ppl-3), 0., 30.)
-                linePen = QtGui.QPen(QtGui.QColor(self.color[0], self.color[1], self.color[2], c))
-                textPen = QtGui.QPen(QtGui.QColor(self.color[0], self.color[1], self.color[2], c*2))
+
+                linePen = QtGui.QPen(QtGui.QColor(self.color[0], self.color[1], self.color[2], self.color[3]))
+                textPen = QtGui.QPen(QtGui.QColor(self.color[0], self.color[1], self.color[2], self.color[3]))
                 #linePen.setCosmetic(True)
                 #linePen.setWidth(1)
                 bx = (ax+1) % 2
