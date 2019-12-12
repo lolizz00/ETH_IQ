@@ -24,7 +24,7 @@ class Ui_Plot(object):
         self.helpPushButton = QtWidgets.QPushButton(self.controlGroupBox)
         self.helpPushButton.setGeometry(QtCore.QRect(30, 60, 75, 23))
         self.helpPushButton.setObjectName("helpPushButton")
-        self.plotter = PlotWidget(Plot)
+        self.plotter = QtWidgets.QWidget(Plot)
         self.plotter.setGeometry(QtCore.QRect(20, 40, 721, 401))
         self.plotter.setObjectName("plotter")
 
@@ -39,4 +39,3 @@ class Ui_Plot(object):
         self.helpPushButton.setText(_translate("Plot", "Справка"))
 
 
-from pyqtgraph import PlotWidget

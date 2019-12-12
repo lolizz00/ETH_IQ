@@ -64,7 +64,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="PlotWidget" name="plotter" native="true">
+  <widget class="QWidget" name="plotter" native="true">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -75,14 +75,6 @@
    </property>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>PlotWidget</class>
-   <extends>QWidget</extends>
-   <header>pyqtgraph</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

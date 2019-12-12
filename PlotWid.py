@@ -15,6 +15,8 @@ import pyqtgraph as pg
 from myGridItem import myGridItem
 from  myLegendItem import  myLegendItem
 
+from  myViewBox import CustomViewBox
+
 class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
     stop_signal = pyqtSignal()
@@ -37,7 +39,9 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
     def __init__(self, parent=None):
         super(PlotWid, self).__init__(parent)
+
         self.preInitUi()
+
         self.initSignals()
         self.legend = None
 
@@ -49,13 +53,26 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
         self.stop_signal.emit()
         event.ignore()
 
+    def mouseDragEv(self, ev):
+        pass
 
+        if ev._button == 1:
+            ev.accept()
 
-    #def initZoom(self):
-     #   self.plotter.sigMouseClicked.connect(self.onClick)
+    def test(self, ev):
+        if ev.button() == QtCore.Qt.RightButton:
+            print('123')
 
     def preInitUi(self):
         self.setupUi(self)
+
+
+        self.vb = CustomViewBox()
+        self.plotter = pg.PlotWidget(self.plotter, viewBox=self.vb)
+
+
+        #self.plotter.plotItem.vb.mouseClickEvent = self.test
+        #self.plotter.plotItem.vb.mouseDragEvent = self.mouseDragEv
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.addWidget(self.plotter)
@@ -87,6 +104,8 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
         self.plotter.addItem(p)
 
 
+        #
+        #self.plotter.vb =self.vb
 
         leg = 'Канал #' + str(n)
 
@@ -253,7 +272,7 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
 
         freq = freq + self.null
-        self.plotter.plotItem.plot(freq, Amp, pen=pg.mkPen({'color': pen, 'width' : 2}), name=legend)
+        self.plotter.plotItem.plot(freq, Amp, pen=pg.mkPen({'color': pen, 'width' : 1}), name=legend)
 
 
         p = myGridItem()
