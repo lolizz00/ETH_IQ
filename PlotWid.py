@@ -216,18 +216,6 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
             IQ = data[iterN].IQ
             ln = len(IQ)
 
-
-            T = 1 / self.fs
-            _IQ = fft(IQ)
-            if 0 in _IQ:
-                _IQ = fft(IQ[:len(IQ)-1])
-                ln = ln - 1
-
-            IQ = _IQ
-
-            IQ = fftshift(IQ)
-
-
             if self.win == 'Bartlett window':
                 win = np.bartlett(ln)
             elif self.win == 'Blackman window':
@@ -237,8 +225,20 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
             elif self.win == 'Hanning window':
                 win = np.hanning(ln)
 
+            T = 1 / self.fs
 
-            IQ = np.abs(IQ) * 2 / np.sum(win)
+            _IQ = fft(IQ * win)
+
+            if 0 in _IQ:
+                _IQ = fft(IQ[:len(IQ)-1] *  win[:len(win)-1])
+                ln = ln - 1
+
+            IQ = _IQ
+            IQ = fftshift(IQ)
+
+
+
+            IQ = np.abs(IQ)
             ref = 32769
 
             t = IQ / ref

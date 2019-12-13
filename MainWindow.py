@@ -63,6 +63,14 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.initClass()
         self.hide()
 
+        self.setDefualt()
+
+    def setDefualt(self):
+        self.oscModeRadioButton.setChecked(True)
+        self.cntLineEdit.setText('1')
+        self.cntSpinBox.setValue(10000)
+
+
     # отображение ошибки
     def showErr(self, text):
         QtWidgets.QMessageBox.critical(self, 'Ошибка!', text)
