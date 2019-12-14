@@ -69,6 +69,7 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
         self.oscModeRadioButton.setChecked(True)
         self.cntLineEdit.setText('1')
         self.cntSpinBox.setValue(10000)
+        self.SNR_checkBox.setChecked(False)
 
 
     # отображение ошибки
@@ -178,6 +179,16 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             lst['win'] = (self.winComboBox.currentText())
             lst['null'] = int(self.nullLineEdit.text())
 
+            if self.fixXcheckBox.isChecked():
+                lst['fix'] = True
+                lst['fixMin'] = float(self.fixXMinlineEdit.text())
+                lst['fixMax'] = float(self.fixXMaxlineEdit.text())
+
+                if lst['fixMax'] < lst['fixMin']:
+                    raise
+
+            else:
+                lst['fix'] = False
 
             self.plotwidget.setParams(lst)
 

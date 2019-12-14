@@ -16,6 +16,8 @@ from myGridItem import myGridItem
 from  myLegendItem import  myLegendItem
 
 from  myViewBox import CustomViewBox
+from  myTextItem import  myTextItem
+
 
 class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
@@ -53,15 +55,6 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
         self.stop_signal.emit()
         event.ignore()
 
-    def mouseDragEv(self, ev):
-        pass
-
-        if ev._button == 1:
-            ev.accept()
-
-    def test(self, ev):
-        if ev.button() == QtCore.Qt.RightButton:
-            print('123')
 
     def preInitUi(self):
         self.setupUi(self)
@@ -123,7 +116,11 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
             power_smooth = spl(xnew)
             self.plotter.plotItem.plot(xnew, power_smooth, pen=pg.mkPen({'color': pen, 'width' : 0.9}), name=leg) #, width: 2
 
-
+        if self.fix:
+            self.plotter.setYRange(self.fixMin, self.fixMax)
+        else:
+            self.plotter.enableAutoRange('x', True)
+            self.plotter.enableAutoRange('y', True)
 
 
 
@@ -156,14 +153,16 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
         noise_y = round(noise_y)
 
 
-        txt = 'Канал # ' + str(chanN)+ '\n'
-        txt = txt + 'Серднее значение сигнала: ' + str(sig_max_y) + ' dBFS\n'
-        txt = txt + 'Серднее значение шума: ' + str(noise_y) + ' dBFS\n'
+
+        txt = txt = 'Канал # ' + str(chanN)+ '<br>'
+        txt = txt + 'Серднее значение сигнала: ' + str(sig_max_y) + ' dBFS<br>'
+        txt = txt + 'Серднее значение шума: ' + str(noise_y) + ' dBFS<br>'
         txt = txt + 'SNR = ' + str(sig_max_y - noise_y) + ' dB'
 
-        text = pg.TextItem(txt,color=pg.mkColor('000000'))
-        self.plotter.plotItem.addItem(text)
-
+        self.text =  myTextItem()
+        self.text.setHtml(txt)
+        self.plotter.plotItem.addItem(self.text)
+        self.text.mouseSig.connect(self.mouseDragCallback)
 
     def find_nearest(self, array, value):
         array = np.asarray(array)
@@ -194,10 +193,15 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
         return data
 
-
-
     def safe_ln(self, x, minval=0.0000000001):
         return np.log10(x.clip(min=minval))
+
+
+    def mouseDragCallback(self, ev):
+        pos = ev.scenePos()
+        pos = self.plotter.plotItem.vb.mapSceneToView(pos)
+        self.text.setPos(pos)
+
 
     # отстройка спектограмы
     def plotSpec(self, data, n, pen='8B0000', showLeg=False):
@@ -229,6 +233,7 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
             _IQ = fft(IQ * win)
 
+
             if 0 in _IQ:
                 _IQ = fft(IQ[:len(IQ)-1] *  win[:len(win)-1])
                 ln = ln - 1
@@ -238,7 +243,7 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
 
 
-            IQ = np.abs(IQ)
+            IQ = np.abs(IQ) * 2 / np.sum(win)
             ref = 32769
 
             t = IQ / ref
@@ -289,6 +294,15 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
         self.plotter.plotItem.setLabel('bottom', 'Frequency, Hz')
 
 
+        if self.fix:
+            self.plotter.setYRange(self.fixMin, self.fixMax)
+        else:
+            self.plotter.enableAutoRange('x', True)
+            self.plotter.enableAutoRange('y', True)
+
+
+
+
     # установка параметров, сохраняем себе
     def setParams(self, lst):
         self.mode = lst['mode']
@@ -304,6 +318,12 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
         self.win = lst['win']
         self.null = lst['null']
+
+
+        self.fix = lst['fix']
+        if self.fix:
+            self.fixMin = lst['fixMin']
+            self.fixMax = lst['fixMax']
 
 
         maxOscVal = 0
