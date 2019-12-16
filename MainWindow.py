@@ -190,6 +190,18 @@ class MW(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 lst['fix'] = False
 
+            if self.fixXXcheckBox.isChecked():
+                lst['fixX'] = True
+                lst['fixMinX'] = float(self.fixXXMinlineEdit.text())
+                lst['fixMaxX'] = float(self.fixXXMaxlineEdit.text())
+
+                if lst['fixMaxX'] < lst['fixMinX']:
+                    raise
+
+            else:
+                lst['fixX'] = False
+
+
             self.plotwidget.setParams(lst)
 
 

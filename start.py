@@ -8,8 +8,6 @@ import sys
 from MainWindow import MW
 from PyQt5 import QtWidgets
 
-
-
 # --- Нормальный вывод ошибок
 def log_uncaught_exceptions(ex_cls, ex, tb):
     text = '{}: {}:\n'.format(ex_cls.__name__, ex)

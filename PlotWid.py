@@ -18,6 +18,7 @@ from  myLegendItem import  myLegendItem
 from  myViewBox import CustomViewBox
 from  myTextItem import  myTextItem
 
+import time
 
 class PlotWid(QtWidgets.QWidget, Ui_Plot):
 
@@ -116,12 +117,7 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
             power_smooth = spl(xnew)
             self.plotter.plotItem.plot(xnew, power_smooth, pen=pg.mkPen({'color': pen, 'width' : 0.9}), name=leg) #, width: 2
 
-        if self.fix:
-            self.plotter.setYRange(self.fixMin, self.fixMax)
-        else:
-            self.plotter.enableAutoRange('x', True)
-            self.plotter.enableAutoRange('y', True)
-
+        self.setScale()
 
 
     def plotSNR(self, s_dbfs, freq, chanN):
@@ -294,14 +290,21 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
         self.plotter.plotItem.setLabel('bottom', 'Frequency, Hz')
 
 
+        self.setScale()
+
+    def setScale(self):
+
         if self.fix:
+            self.plotter.enableAutoRange('y', False)
             self.plotter.setYRange(self.fixMin, self.fixMax)
         else:
-            self.plotter.enableAutoRange('x', True)
             self.plotter.enableAutoRange('y', True)
 
-
-
+        if self.fixX:
+            self.plotter.enableAutoRange('x', False)
+            self.plotter.setXRange(self.fixMinX, self.fixMaxX)
+        else:
+            self.plotter.enableAutoRange('x', True)
 
     # установка параметров, сохраняем себе
     def setParams(self, lst):
@@ -325,6 +328,11 @@ class PlotWid(QtWidgets.QWidget, Ui_Plot):
             self.fixMin = lst['fixMin']
             self.fixMax = lst['fixMax']
 
+
+        self.fixX = lst['fixX']
+        if self.fixX:
+            self.fixMinX = lst['fixMinX']
+            self.fixMaxX = lst['fixMaxX']
 
         maxOscVal = 0
 

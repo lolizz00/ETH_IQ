@@ -398,38 +398,6 @@
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>280</x>
-          <y>80</y>
-          <width>141</width>
-          <height>65</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="0">
-          <widget class="QRadioButton" name="oscModeRadioButton">
-           <property name="text">
-            <string>Осцилограмма</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QRadioButton" name="specModeRadioButton">
-           <property name="text">
-            <string>Спектограмма</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
           <x>30</x>
           <y>30</y>
           <width>152</width>
@@ -484,34 +452,14 @@
           <x>30</x>
           <y>80</y>
           <width>201</width>
-          <height>88</height>
+          <height>136</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="chan1checkBox">
+         <item row="3" column="1">
+          <widget class="QCheckBox" name="chan8checkBox">
            <property name="text">
-            <string>Канал 1</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="chan5checkBox">
-           <property name="text">
-            <string>Канал 5</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="chan2checkBox">
-           <property name="text">
-            <string>Канал 2</string>
+            <string>Канал 8</string>
            </property>
            <property name="checked">
             <bool>false</bool>
@@ -528,20 +476,10 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QCheckBox" name="chan3checkBox">
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="chan2checkBox">
            <property name="text">
-            <string>Канал 3</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QCheckBox" name="chan7checkBox">
-           <property name="text">
-            <string>Канал 7</string>
+            <string>Канал 2</string>
            </property>
            <property name="checked">
             <bool>false</bool>
@@ -558,10 +496,40 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QCheckBox" name="chan8checkBox">
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="chan1checkBox">
            <property name="text">
-            <string>Канал 8</string>
+            <string>Канал 1</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="chan3checkBox">
+           <property name="text">
+            <string>Канал 3</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="chan5checkBox">
+           <property name="text">
+            <string>Канал 5</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QCheckBox" name="chan7checkBox">
+           <property name="text">
+            <string>Канал 7</string>
            </property>
            <property name="checked">
             <bool>false</bool>
@@ -573,8 +541,8 @@
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>180</y>
+          <x>20</x>
+          <y>220</y>
           <width>263</width>
           <height>172</height>
          </rect>
@@ -777,8 +745,8 @@
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>290</x>
-          <y>180</y>
+          <x>300</x>
+          <y>290</y>
           <width>153</width>
           <height>91</height>
          </rect>
@@ -828,11 +796,50 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget_2">
         <property name="geometry">
          <rect>
-          <x>280</x>
-          <y>290</y>
+          <x>300</x>
+          <y>110</y>
+          <width>161</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_7">
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="fixXXMinlineEdit"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_18">
+           <property name="text">
+            <string>Min</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_19">
+           <property name="text">
+            <string>Max</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QCheckBox" name="fixXXcheckBox">
+           <property name="text">
+            <string>Зафиксировать ось X</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="fixXXMaxlineEdit"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>300</x>
+          <y>200</y>
           <width>161</width>
           <height>71</height>
          </rect>
@@ -864,6 +871,38 @@
          </item>
          <item row="2" column="1">
           <widget class="QLineEdit" name="fixXMaxlineEdit"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>310</x>
+          <y>20</y>
+          <width>141</width>
+          <height>65</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="0">
+          <widget class="QRadioButton" name="oscModeRadioButton">
+           <property name="text">
+            <string>Осцилограмма</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QRadioButton" name="specModeRadioButton">
+           <property name="text">
+            <string>Спектограмма</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
